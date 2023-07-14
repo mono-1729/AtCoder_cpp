@@ -1,0 +1,2 @@
+munmap_chunk(): invalid pointer
+配列の添え字のindexがおかしい
