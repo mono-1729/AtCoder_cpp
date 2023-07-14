@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define _GLIBCXX_DEBUG
 #define rep(i, a, n) for(int i = a; i < n; i++)
 #define rrep(i, a, n) for(int i = a; i >= n; i--)
 #define ll long long
@@ -47,7 +48,8 @@ int main()
 	sort(a.begin(),a.end());
 	sort(f.rbegin(),f.rend());
 	ll num=0;
-	rep(i,0,n)chmax(num,1LL*a[i]*f[i]);
+	rep(i,0,n)chmax(num,a[i]*f[i]);
+	cout<<a[0]*f[0]<<endl;
 	cout<<binary_search(-1,num,a,f,k,n)<< endl;
 	return 0;
 }
