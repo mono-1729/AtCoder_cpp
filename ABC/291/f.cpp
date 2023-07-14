@@ -32,14 +32,14 @@ int main()
 	rep(i,0,n){
 		rep(j,0,m){
 			if (s[i][j]=='1'){
-				chmin(dist[i+m+1],dist[i]+1);
+				chmin(dist[i+j+1],dist[i]+1);
 			}
 		}
 	}
 	rrep(i,n-1,0){
 		rep(j,0,m){
 			if (s[i][j]=='1'){
-				chmin(dist2[i],dist2[i+m+1]+1);
+				chmin(dist2[i],dist2[i+j+1]+1);
 			}
 		}
 	}
