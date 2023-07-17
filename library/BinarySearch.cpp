@@ -2,14 +2,13 @@
 #include <bits/stdc++.h>
 #include <stdlib.h>
 using namespace std;
-bool is_ok(ll mid){
-    return true;
-}
-ll binary_search(ll left, ll right){
+int main(){
+    ll left=-1,right=1000000000000000000;
     while (abs(right - left) > 1){
         ll mid = (right + left) / 2 ;
-        if (is_ok(mid)) left = mid;
+        bool flg=false;
+
+        if (flg) left = mid;
         else right = mid;
     }
-    return left;
 }
