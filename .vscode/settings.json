@@ -4,6 +4,7 @@
 		"numeric": "cpp",
 		"bitset": "cpp",
 		"chrono": "cpp",
-		"algorithm": "cpp"
+		"algorithm": "cpp",
+		"ostream": "cpp"
 	}
 }
