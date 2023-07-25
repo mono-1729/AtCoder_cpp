@@ -58,8 +58,8 @@ ll powMod(ll x, ll n) {
 
 int main() {
 	int n,m;cin>>n>>m;
-	vector<set<int>>gin(n,set<int>());
-	vector<set<int>>gout(n,set<int>());
+	vector<set<int>>gin(n);
+	vector<set<int>>gout(n);
 	vector<int>que;
 	int ans=0;
 	rep(i,0,m){
