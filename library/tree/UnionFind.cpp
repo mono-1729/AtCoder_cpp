@@ -111,3 +111,16 @@ public:
         iota(mini.begin(), mini.end(), 0);
     }
 };
+
+//ここまで
+int main(){
+    ll n = 10;
+    UnionFind uf(n);
+
+    uf.unite(0, 1);
+    uf.unite(1, 2);
+    cout << uf.size(0) << endl;
+    cout << uf.size(3) << endl;
+    cout << uf[2] << endl;
+    uf.print();
+}
