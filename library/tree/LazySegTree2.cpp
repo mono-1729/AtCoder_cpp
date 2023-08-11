@@ -217,7 +217,6 @@ F id() { return 9e18; }
 
 
 int main(){
-
-
+    //LazySegmentTree<S, op, e, F, mapping, composition, id> lst(initial);
     return 0;
 }
