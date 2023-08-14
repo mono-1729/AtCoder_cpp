@@ -5,6 +5,9 @@
 		"bitset": "cpp",
 		"chrono": "cpp",
 		"algorithm": "cpp",
-		"ostream": "cpp"
+		"ostream": "cpp",
+		"random": "cpp",
+		"limits": "cpp",
+		"valarray": "cpp"
 	}
 }
