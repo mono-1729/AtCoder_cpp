@@ -1,3 +1,4 @@
+// https://betrue12.hateblo.jp/entry/2020/09/23/005940
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
