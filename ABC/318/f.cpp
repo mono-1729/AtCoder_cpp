@@ -60,31 +60,15 @@ ll powMod(ll x, ll n) {
 
 int main() {
 	int n;cin>>n;
-	vector<int>a(n);
-	vector<vector<int>>index(n);
+	vector<ll>x(n),l(n);
+	rep(i,0,n)cin>>x[i];
+	rep(i,0,n)cin>>l[i];
+	set<ll>indexes;
 	rep(i,0,n){
-		cin>>a[i];
-		a[i]--;
-		index[a[i]].push_back(i);
-	}
-	ll ans=0;
-	rep(i,0,n){
-		ll last=-1;
-		ll num=0;
-		ll sum=0;
-		for(auto x:index[i]){
-			if(last==-1){
-				last=x;
-			}
-			else{
-				sum+=num*(-last-1+x);
-				ans+=sum;
-				last=x;
-			}
-			num++;
+		rep(j,0,n){
+			
 		}
-		//cout<<ans<<" "<<i+1<<endl;
 	}
-	cout<<ans<<endl;
+	
 	return 0;
 }
