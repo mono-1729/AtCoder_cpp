@@ -1,7 +1,62 @@
-// https://betrue12.hateblo.jp/entry/2020/09/23/005940
 #include <bits/stdc++.h>
+#include <stdlib.h>
 using namespace std;
+#define rep(i, a, n) for(ll i = a; i < n; i++)
+#define rrep(i, a, n) for(ll i = a; i >= n; i--)
 #define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+constexpr ll mod = 1000000007;
+constexpr ll MOD = 998244353;
+constexpr int IINF = 1001001001;
+constexpr ll INF = 1LL<<60;
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+template<int MOD> struct ModInt {
+	static const int Mod = MOD; unsigned x; ModInt() : x(0) { }
+	ModInt(signed sig) { x = sig < 0 ? sig % MOD + MOD : sig % MOD; }
+	ModInt(signed long long sig) { x = sig < 0 ? sig % MOD + MOD : sig % MOD; }
+	int get() const { return (int)x; }
+	ModInt &operator+=(ModInt that) { if ((x += that.x) >= MOD) x -= MOD; return *this; }
+	ModInt &operator-=(ModInt that) { if ((x += MOD - that.x) >= MOD) x -= MOD; return *this; }
+	ModInt &operator*=(ModInt that) { x = (unsigned long long)x * that.x % MOD; return *this; }
+	ModInt &operator/=(ModInt that) { return *this *= that.inverse(); }
+	ModInt operator+(ModInt that) const { return ModInt(*this) += that; }
+	ModInt operator-(ModInt that) const { return ModInt(*this) -= that; }
+	ModInt operator*(ModInt that) const { return ModInt(*this) *= that; }
+	ModInt operator/(ModInt that) const { return ModInt(*this) /= that; }
+	ModInt inverse() const { long long a = x, b = MOD, u = 1, v = 0;
+		while (b) { long long t = a / b; a -= t * b; std::swap(a, b); u -= t * v; std::swap(u, v); }
+		return ModInt(u); }
+	bool operator==(ModInt that) const { return x == that.x; }
+	bool operator!=(ModInt that) const { return x != that.x; }
+	ModInt operator-() const { ModInt t; t.x = x == 0 ? 0 : Mod - x; return t; }
+};
+template<int MOD> ostream& operator<<(ostream& st, const ModInt<MOD> a) { st << a.get(); return st; };
+template<int MOD> ModInt<MOD> operator^(ModInt<MOD> a, unsigned long long k) {
+	ModInt<MOD> r = 1; while (k) { if (k & 1) r *= a; a *= a; k >>= 1; } return r; }
+typedef ModInt<998244353> mint;
+
+ll gcd(ll a, ll b){
+	if(a%b == 0){
+	  return b;
+	}else{
+	  return gcd(b, a%b);
+	}
+}
+
+ll lcm(ll a, ll b){
+	return a*b / gcd(a, b);
+}
+
+ll powMod(ll x, ll n) {
+	if (n == 0) return 1 % MOD;
+	ll val = powMod(x, n / 2);
+	val *= val;
+	val %= MOD;
+	if (n % 2 == 1) val *= x;
+	return val % MOD;
+}
 
 template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()> 
 class LazySegmentTree {
@@ -183,135 +238,25 @@ public:
 };
 
 // 遅延セグメント木の準備
-using S =  ll;
-S op(S a, S b) { return min(a, b); }
-S e() { return 9e18; }
+using S = long long;
+using F = long long;
+
+const S INF = 8e18;
+const F ID = 0;
+
+S op(S a, S b) { return gcd(a, b); }
+S e() { return 0; }
 // 一次関数 a x + b によって恒等写像と代入を表現
 using F = ll;
-S mapping(F a, S x) { return min(a, x); }
-F composition(F a, F b) { return min(a, b); }
-F id() { return 9e18; }
+S mapping(F a, S x) { return gcd(a, x); }
+F composition(F a, F b) { return gcd(a, b); }
+F id() { return 1; }
 
+int main() {
+	int n,q;cin>>n>>q;
+	vector<ll>a(n),b(n);
+	rep(i,0,n)cin>>a[i];
+	rep(i,0,n)cin>>b[i];
 
-int main(){
-    //LazySegmentTree<S, op, e, F, mapping, composition, id> lst(initial);
-    return 0;
+	return 0;
 }
-
-// 区間加算・区間最小値取得
-// using S = long long;
-// using F = long long;
-
-// const S INF = 8e18;
-
-// S op(S a, S b){ return std::min(a, b); }
-// S e(){ return INF; }
-// S mapping(F f, S x){ return f+x; }
-// F composition(F f, F g){ return f+g; }
-// F id(){ return 0; }
-
-// int main(){
-//     int N;
-//     std::vector<S> v(N);
-//     atcoder::lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
-// }
-
-
-//区間加算・区間最小値取得
-// using S = long long;
-// using F = long long;
-
-// const S INF = 8e18;
-
-// S op(S a, S b){ return std::max(a, b); }
-// S e(){ return -INF; }
-// S mapping(F f, S x){ return f+x; }
-// F composition(F f, F g){ return f+g; }
-// F id(){ return 0; }
-
-// int main(){
-//     int N;
-//     std::vector<S> v(N);
-//     atcoder::lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
-// }
-
-//区間加算・区間和取得
-// struct S{
-//     long long value;
-//     int size;
-// };
-// using F = long long;
-
-// S op(S a, S b){ return {a.value+b.value, a.size+b.size}; }
-// S e(){ return {0, 0}; }
-// S mapping(F f, S x){ return {x.value + f*x.size, x.size}; }
-// F composition(F f, F g){ return f+g; }
-// F id(){ return 0; }
-
-// int main(){
-//     int N;
-//     std::vector<S> v(N, {0, 1});
-//     atcoder::lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
-// }
-
-//区間変更・区間最小値取得
-// using S = long long;
-// using F = long long;
-
-// const S INF = 8e18;
-// const F ID = 8e18;
-
-// S op(S a, S b){ return std::min(a, b); }
-// S e(){ return INF; }
-// S mapping(F f, S x){ return (f == ID ? x : f); }
-// F composition(F f, F g){ return (f == ID ? g : f); }
-// F id(){ return ID; }
-
-// int main(){
-//     int N;
-//     std::vector<S> v(N);
-//     atcoder::lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
-// }
-
-//区間変更・区間最大値取得
-// using S = long long;
-// using F = long long;
-
-// const S INF = 8e18;
-// const F ID = 8e18;
-
-// S op(S a, S b){ return std::max(a, b); }
-// S e(){ return -INF; }
-// S mapping(F f, S x){ return (f == ID ? x : f); }
-// F composition(F f, F g){ return (f == ID ? g : f); }
-// F id(){ return ID; }
-
-// int main(){
-//     int N;
-//     std::vector<S> v(N);
-//     atcoder::lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
-// }
-
-//区間変更・区間和取得
-// struct S{
-//     long long value;
-//     int size;
-// };
-// using F = long long;
-
-// const F ID = 8e18;
-
-// S op(S a, S b){ return {a.value+b.value, a.size+b.size}; }
-// S e(){ return {0, 0}; }
-// S mapping(F f, S x){
-//     if(f != ID) x.value = f*x.size;
-//     return x;
-// }
-// F composition(F f, F g){ return (f == ID ? g : f); }
-// F id(){ return ID; }
-
-// int main(){
-//     int N;
-//     std::vector<S> v(N, {0, 1});
-//     atcoder::lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
-// }
