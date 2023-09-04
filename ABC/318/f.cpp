@@ -63,12 +63,35 @@ int main() {
 	vector<ll>x(n),l(n);
 	rep(i,0,n)cin>>x[i];
 	rep(i,0,n)cin>>l[i];
-	set<ll>indexes;
+	set<ll>poses;
 	rep(i,0,n){
 		rep(j,0,n){
-			
+			poses.insert(x[i]+l[j]);
+			poses.insert(x[i]-l[j]-1);
 		}
 	}
-	
+	ll ans=0;
+	ll last=-(1LL<<62);
+	for(auto pos:poses){
+		if(last==-(1LL<<62)){
+			last=pos;
+			continue;
+		}
+		vector<ll>dists;
+		rep(i,0,n){
+			dists.push_back(abs(x[i]-pos));
+		}
+		sort(dists.begin(), dists.end());
+		bool ok=true;
+		rep(i,0,n){
+			if(dists[i]>l[i]){
+				ok=false;
+				break;
+			}
+		}
+		if(ok)ans+=pos-last;
+		last=pos;
+	}
+	cout<<ans<<endl;
 	return 0;
 }
