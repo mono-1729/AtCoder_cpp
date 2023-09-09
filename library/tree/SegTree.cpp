@@ -56,6 +56,6 @@ struct SegTree {
     }
 };
 
-auto fx = [](int x1, int x2) -> int { return min(x1, x2); };
-int ex = numeric_limits<int>::max();
+auto fx = [](int x1, int x2) -> int { return max(x1, x2); };
+int ex = 0;
 // SegTree<int> rmq(n, fx, ex);
