@@ -58,32 +58,40 @@ ll powMod(ll x, ll n) {
 	return val % MOD;
 }
 
-int main() {
-	int n,p;cin>>n>>p;
-	vector<vector<vector<ll>>>dp(n+1,vector<vector<ll>>(n+4,vector<ll>(6,0)));
-	dp[1][0][3]=1;
-	dp[1][1][0]=1;
-	rep(i,1,n){
-		rep(j,0,n+1){
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][0])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][0])%p;
-
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][1])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][1])%p;
-
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][2])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][2])%p;
-
-			dp[i+1][j+2][1]=(dp[i+1][j+2][1]+dp[i][j][3])%p;
-			dp[i+1][j+2][2]=(dp[i+1][j+2][2]+dp[i][j][3])%p;
-			dp[i+1][j+1][3]=(dp[i+1][j+1][3]+dp[i][j][3]*3)%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][3])%p;
-
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][5])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][5])%p;
-		}
-	}
-	rep(i,1,n) cout<<(dp[n][i][3])%p<<" ";
-	cout<<endl;
-	return 0;
+int main(){
+  int N, K;
+  cin >> N >> K;
+  vector<int> P(N);
+  for (int i = 0; i < N; i++){
+    cin >> P[i];
+  }
+  vector<bool> inc(N - 1);
+  for (int i = 0; i < N - 1; i++){
+    inc[i] = P[i] < P[i + 1];
+  }
+  vector<int> sum(N);
+  sum[0] = 0;
+  for (int i = 0; i < N - 1; i++){
+    sum[i + 1] = sum[i] + (inc[i] ? 1 : 0);
+  }
+  bool ok = false;
+  for (int i = 0; i <= N - K; i++){
+    if (sum[i + K - 1] - sum[i] == K - 1){
+      ok = true;
+    }
+  }
+  if (!ok){
+    int x = N - K;
+    while (inc[x - 1]){
+      x--;
+    }
+    sort(P.begin() + x, P.begin() + x + K);
+  }
+  for (int i = 0; i < N; i++){
+    cout << P[i];
+    if (i < N - 1){
+      cout << ' ';
+    }
+  }
+  cout << endl;
 }

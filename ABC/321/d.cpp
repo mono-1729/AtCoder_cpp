@@ -59,31 +59,22 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-	int n,p;cin>>n>>p;
-	vector<vector<vector<ll>>>dp(n+1,vector<vector<ll>>(n+4,vector<ll>(6,0)));
-	dp[1][0][3]=1;
-	dp[1][1][0]=1;
-	rep(i,1,n){
-		rep(j,0,n+1){
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][0])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][0])%p;
-
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][1])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][1])%p;
-
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][2])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][2])%p;
-
-			dp[i+1][j+2][1]=(dp[i+1][j+2][1]+dp[i][j][3])%p;
-			dp[i+1][j+2][2]=(dp[i+1][j+2][2]+dp[i][j][3])%p;
-			dp[i+1][j+1][3]=(dp[i+1][j+1][3]+dp[i][j][3]*3)%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][3])%p;
-
-			dp[i+1][j+1][5]=(dp[i+1][j+1][5]+dp[i][j][5])%p;
-			dp[i+1][j][3]=(dp[i+1][j][3]+dp[i][j][5])%p;
-		}
+	ll n,m,p;cin>>n>>m>>p;
+	vector<ll> a(n),b(m),asum(n+1);
+	ll ans=0;
+	rep(i,0,n){
+		cin>>a[i];
 	}
-	rep(i,1,n) cout<<(dp[n][i][3])%p<<" ";
-	cout<<endl;
+	rep(i,0,m)cin>>b[i];
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+	rep(i,0,n){
+		asum[i+1] = asum[i] + a[i];
+	}
+	for(auto x:b){
+		ll num=lower_bound(a.begin(), a.end(), p-x)-a.begin();
+		ans += asum[num]+x*num+p*(n-num);
+	}
+	cout<<ans<<endl;
 	return 0;
 }
