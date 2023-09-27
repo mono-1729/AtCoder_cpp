@@ -3,12 +3,12 @@
 #include <stdlib.h>
 using namespace std;
 int main(){
-    ll left=-1,right=1000000000000000000;
-    while (abs(right - left) > 1){
-        ll mid = (right + left) / 2 ;
+    ll ng=-1,ok=1000000000000000000;
+    while (abs(ok - ng) > 1){
+        ll mid = (ok + ng) / 2 ;
         bool flg=false;
 
-        if (flg) left = mid;
-        else right = mid;
+        if (flg) ok = mid;
+        else ng = mid;
     }
 }
