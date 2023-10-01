@@ -238,22 +238,59 @@ public:
 };
 
 // 遅延セグメント木の準備
-using S =  ll;
-S op(S a, S b) { return min(a, b); }
-S e() { return 9e18; }
-// 一次関数 a x + b によって恒等写像と代入を表現
-using F = ll;
-S mapping(F a, S x) { return min(a, x); }
-F composition(F a, F b) { return min(a, b); }
-F id() { return 9e18; }
+struct S{
+    long long inconsec1;
+    long long lconsec1;
+    long long rconsec1;
+    long long inconsec0;
+    long long lconsec0;
+    long long rconsec0;
+    int size;
+};
+using F = long long;
+
+S op(S a, S b){ 
+    ll num1,num2,num3,num4,num5,num6,num7;
+    num1 = max({a.inconsec1, b.inconsec1, a.rconsec1+b.lconsec1});
+    num2 = (a.lconsec1==a.size ? a.lconsec1+b.lconsec1 : a.lconsec1);
+    num3 = (b.rconsec1==b.size ? a.rconsec1+b.rconsec1 : b.rconsec1);
+    num4 = max({a.inconsec0, b.inconsec0, a.rconsec0+b.lconsec0});
+    num5 = (a.lconsec0==a.size ? a.lconsec0+b.lconsec0 : a.lconsec0);
+    num6 = (b.rconsec0==b.size ? a.rconsec0+b.rconsec0 : b.rconsec0);
+    num7=a.size+b.size;
+    return {num1,num2,num3,num4,num5,num6,num7}; 
+}
+S e(){ return {0,0,0,0,0,0,0}; }
+S mapping(F f, S x){ 
+    if (f==0) return x;
+    else return {x.inconsec0,x.lconsec0,x.rconsec0,x.inconsec1,x.lconsec1,x.rconsec1,x.size}; 
+}
+F composition(F f, F g){ return f^g; }
+F id(){ return 0; }
+
 
 
 int main(){
-    //LazySegmentTree<S, op, e, F, mapping, composition, id> lst(initial);
-    return 0;
-}
-
-int main() {
-	int n,q;cin>>n>>q;
+    int n,q;cin>>n>>q;
 	string s;cin>>s;
+    vector<S> initial(n);
+    rep(i,0,n){
+        if(s[i]=='1'){
+            initial[i]={1,1,1,0,0,0,1};
+        }
+        else{
+            initial[i]={0,0,0,1,1,1,1};
+        }
+    }
+    LazySegmentTree<S, op, e, F, mapping, composition, id> lst(initial);
+    rep(i,0,q){
+        int c,l,r;cin>>c>>l>>r;
+        if(c==1){
+            lst.apply(l-1,r,1);
+        }
+        else{
+            cout<<lst.prod(l-1,r).inconsec1<<endl;
+        }
+    }
+    return 0;
 }

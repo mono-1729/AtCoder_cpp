@@ -217,7 +217,7 @@ int main(){
 // }
 
 
-//区間加算・区間最小値取得
+//区間加算・区間最大値取得
 // using S = long long;
 // using F = long long;
 
