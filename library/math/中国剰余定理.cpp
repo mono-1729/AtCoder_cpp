@@ -80,6 +80,8 @@ pll chineseRem(const vector<ll> &b, const vector<ll> &m){
     }
     return {mod(r, M), M};
 }
+//pll res = chineseRem({2, 3}, {3, 5});
+//cout << "x ≡ " << res.first << " (mod. "  << res.second << ")" << endl;
 
 int main(){
     pll res = chineseRem({2, 3}, {3, 5});
