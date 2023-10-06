@@ -29,7 +29,7 @@ bool BellmanFord(vector<Edge> &edges, vector<ll> &dist, int start){
     fill(dist.begin(), dist.end(), INF);
 	dist[start] = 0;
     // 負の閉路がなければ、(頂点数-1)回の更新で最短路が決まる
-	rep(i, 0, (int)dist.size()-1){
+	rep(i, 0, (int)dist.size()){
 		bool changed = false;
 		// 各辺について
 		for (const auto& edge : edges){
@@ -46,6 +46,18 @@ bool BellmanFord(vector<Edge> &edges, vector<ll> &dist, int start){
 			return false;
 		}
 	}
+	// 負閉路が影響を与える範囲を計算
+	// rep(i, 0, (int)dist.size()){
+	// 	// 各辺について
+	// 	for (const auto& edge : edges){
+	// 		// to までの新しい距離
+	// 		const ll d = (dist[edge.from] + edge.cost);
+	// 		// d が現在の記録より小さければ更新
+	// 		if (d < dist[edge.to]&& dist[edge.from] != INF){
+	// 			dist[edge.to] = -INF;
+	// 		}
+	// 	}
+	// }
 	// 頂点回数分だけループしても更新が続くのは, 負閉路が存在するから
 	return true;
 }
