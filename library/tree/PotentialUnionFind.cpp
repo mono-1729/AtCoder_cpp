@@ -3,40 +3,40 @@
 using namespace std;
 
 template<class Abel> struct UnionFind {
-    vector<int> par;
-    vector<int> rank;
+    vector<ll> par;
+    vector<ll> rank;
     vector<Abel> diff_weight;
 
-    UnionFind(int n = 1, Abel SUM_UNITY = 0) {
+    UnionFind(ll n = 1, Abel SUM_UNITY = 0) {
         init(n, SUM_UNITY);
     }
 
-    void init(int n = 1, Abel SUM_UNITY = 0) {
+    void init(ll n = 1, Abel SUM_UNITY = 0) {
         par.resize(n); rank.resize(n); diff_weight.resize(n);
-        for (int i = 0; i < n; ++i) par[i] = i, rank[i] = 0, diff_weight[i] = SUM_UNITY;
+        for (ll i = 0; i < n; ++i) par[i] = i, rank[i] = 0, diff_weight[i] = SUM_UNITY;
     }
 
-    int root(int x) {
+    ll root(ll x) {
         if (par[x] == x) {
             return x;
         }
         else {
-            int r = root(par[x]);
+            ll r = root(par[x]);
             diff_weight[x] += diff_weight[par[x]];
             return par[x] = r;
         }
     }
 
-    Abel weight(int x) {
+    Abel weight(ll x) {
         root(x);
         return diff_weight[x];
     }
 
-    bool issame(int x, int y) {
+    bool issame(ll x, ll y) {
         return root(x) == root(y);
     }
 
-    bool merge(int x, int y, Abel w) {
+    bool merge(ll x, ll y, Abel w) {
         w += weight(x); w -= weight(y);
         x = root(x); y = root(y);
         if (x == y) return false;
@@ -47,7 +47,7 @@ template<class Abel> struct UnionFind {
         return true;
     }
 
-    Abel diff(int x, int y) {
+    Abel diff(ll x, ll y) {
         return weight(y) - weight(x);
     }
 };
