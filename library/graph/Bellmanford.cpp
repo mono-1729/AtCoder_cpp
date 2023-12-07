@@ -36,7 +36,7 @@ bool BellmanFord(vector<Edge> &edges, vector<ll> &dist, int start){
 			// to までの新しい距離
 			const ll d = (dist[edge.from] + edge.cost);
 			// d が現在の記録より小さければ更新
-			if (d < dist[edge.to]){
+			if (d < dist[edge.to] && dist[edge.from] != INF){
 				dist[edge.to] = d;
 				changed = true;
 			}
