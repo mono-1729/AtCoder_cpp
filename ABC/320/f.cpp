@@ -59,8 +59,36 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-	int n,h;cin>>n>>h;
-	vector<int>x(n),p(n),f(n);
-	
+	ll n,h;cin>>n>>h;
+	vector<ll>x(n),p(n),f(n);
+	rep(i,0,n)cin>>x[i];
+	rep(i,0,n-1)cin>>p[i]>>f[i];
+	p[n-1] = 0; f[n-1] = 0;
+	vector dp(n+1,vector<vector<ll>>(h+1,vector<ll>(h+1,IINF)));
+	dp[0][h][0]=0;
+	ll pre=0;
+	rep(i,0,n){
+		ll l = x[i]-pre;
+		rep(j,0,h+1){
+			rep(k,0,h+1){
+				if(dp[i][j][k]==IINF)continue;
+				ll nj=j-l, nk=k+l;
+				if(nj>=0 && nk<=h){
+					chmin(dp[i+1][nj][nk], dp[i][j][k]);
+					chmin(dp[i+1][min(nj+f[i],h)][nk], dp[i][j][k]+p[i]);
+					chmin(dp[i+1][nj][max(nk-f[i],0LL)], dp[i][j][k]+p[i]);
+				}
+			}
+		}
+		pre = x[i];
+	}
+	ll ans = IINF;
+	rep(i,0,h+1){
+		rep(j,0,i+1){
+			chmin(ans, dp[n][i][j]);
+		}
+	}
+	if(ans==IINF)cout << -1 << endl;
+	else cout << ans << endl;
 	return 0;
 }

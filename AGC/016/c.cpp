@@ -129,34 +129,34 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-	cout<<fixed<<setprecision(15);
-	ll n,d;cin>>n>>d;
-	vector<ll> w(n);
-	double sum=0;
-	rep(i,0,n) {
-		cin>>w[i];
-		sum+=w[i];
-	}
-	double num=sum/d;
-	vector<vector<double>> dp(d+1,vector<double>(1<<n,INF));
-	rep(bit,0,1<<n){
-		double tmp=0;
-		rep(j,0,n){
-			if(bit>>j&1) tmp+=w[j];
+	ll H,W,h,w;cin>>H>>W>>h>>w;
+	vector<vector<ll>> a(H, vector<ll>(W, 0));
+	for(int i=0;i<H;i+=h){
+		for(int j=0;j<W;j+=w){
+			a[i][j] = 1e9-1;
 		}
-		dp[1][bit]=pow(num-tmp,2);
 	}
-	rep(i,2,d+1){
-		rep(bit,0,1<<n){
-			ll bb=(bit-1)&bit;
-			rep(j,1,i){
-				while(bb){
-					chmin(dp[i][bit],dp[j][bit-bb]+dp[i-j][bb]);
-					bb=(bb-1)&bit;
-				}
+	for(int i=h-1;i<H;i+=h){
+		for(int j=w-1;j<W;j+=w){
+			a[i][j] = -1e9;
+		}
+	}
+	ll sum = 0;
+	for(int i=0;i<H;i++){
+		for(int j=0;j<W;j++){
+			sum += a[i][j];
+		}
+	}
+	if(sum <= 0){
+		cout << "No" << endl;
+	}else{
+		cout << "Yes" << endl;
+		for(int i=0;i<H;i++){
+			for(int j=0;j<W;j++){
+				cout << a[i][j] << " ";
 			}
+			cout << endl;
 		}
 	}
-	cout<<dp[d][(1<<n)-1]/d<<endl;
 	return 0;
 }

@@ -127,36 +127,54 @@ ll powMod(ll x, ll n) {
 	if (n % 2 == 1) val *= x;
 	return val % MOD;
 }
+ll get_sqrt(ll x){
+	ll l = 0, r = 3e9+2;
+	while(r-l>1){
+		ll mid = (l+r)/2;
+		if(mid*mid<=x) l = mid;
+		else r = mid;
+	}
+	return l;
+}
+
 
 int main() {
-	cout<<fixed<<setprecision(15);
-	ll n,d;cin>>n>>d;
-	vector<ll> w(n);
-	double sum=0;
-	rep(i,0,n) {
-		cin>>w[i];
-		sum+=w[i];
-	}
-	double num=sum/d;
-	vector<vector<double>> dp(d+1,vector<double>(1<<n,INF));
-	rep(bit,0,1<<n){
-		double tmp=0;
-		rep(j,0,n){
-			if(bit>>j&1) tmp+=w[j];
+	ll t;cin>>t;
+	rep(_,0,t){
+		ll x;cin>>x;
+		vector<ll> vec;
+		ll tmp = x;
+		ll cnt = 0;
+		while(true){
+			vec.push_back(get_sqrt(tmp));
+			tmp = get_sqrt(tmp);
+			cnt++;
+			if(tmp==1 && cnt>2) break;
 		}
-		dp[1][bit]=pow(num-tmp,2);
-	}
-	rep(i,2,d+1){
-		rep(bit,0,1<<n){
-			ll bb=(bit-1)&bit;
-			rep(j,1,i){
-				while(bb){
-					chmin(dp[i][bit],dp[j][bit-bb]+dp[i-j][bb]);
-					bb=(bb-1)&bit;
+		reverse(vec.begin(),vec.end());
+		ll n = vec.size();
+		ll ans = 0;
+		vector<ll> dp(2,0);
+		dp[1] = 1;
+		rep(i,0,n-1){
+			if(i==n-2){
+				rep(j,1,dp.size()){
+					ans+=dp[j]*(vec[i+1]-(j*j)+1);
 				}
 			}
+			else{
+				vector<ll> sum(dp.size(),0);
+				rep(j,0,dp.size()-1){
+					sum[j+1] = sum[j]+dp[j+1];
+				}
+				vector<ll> ndp(vec[i+1]+1,0);
+				rep(j,1,ndp.size()){
+					ndp[j]=sum[get_sqrt(j)];
+				}
+				dp = ndp;
+			}
 		}
+		cout<<ans<<endl;
 	}
-	cout<<dp[d][(1<<n)-1]/d<<endl;
 	return 0;
 }

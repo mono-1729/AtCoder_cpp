@@ -129,34 +129,19 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-	cout<<fixed<<setprecision(15);
-	ll n,d;cin>>n>>d;
-	vector<ll> w(n);
-	double sum=0;
-	rep(i,0,n) {
-		cin>>w[i];
-		sum+=w[i];
+	ll n;cin>>n;
+	string x;cin>>x;
+	vector<mint> dp1(n+1, 0), dp2(n+1, 0);
+	dp1[0] = 1;
+	dp2[0] = 0;
+	rep(i,0,n){
+		ll num = x[i] - '0';
+		dp1[i+1] = dp1[i] + dp2[i];
+		dp2[i+1] = dp2[i]*(10+num)+dp1[i]*num;
 	}
-	double num=sum/d;
-	vector<vector<double>> dp(d+1,vector<double>(1<<n,INF));
-	rep(bit,0,1<<n){
-		double tmp=0;
-		rep(j,0,n){
-			if(bit>>j&1) tmp+=w[j];
-		}
-		dp[1][bit]=pow(num-tmp,2);
-	}
-	rep(i,2,d+1){
-		rep(bit,0,1<<n){
-			ll bb=(bit-1)&bit;
-			rep(j,1,i){
-				while(bb){
-					chmin(dp[i][bit],dp[j][bit-bb]+dp[i-j][bb]);
-					bb=(bb-1)&bit;
-				}
-			}
-		}
-	}
-	cout<<dp[d][(1<<n)-1]/d<<endl;
+	cout << dp2[n] << endl;
+	// rep(i,0,n){
+	// 	cout << dp2[i+1] << endl;
+	// }
 	return 0;
 }
