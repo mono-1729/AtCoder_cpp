@@ -6,7 +6,8 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
@@ -103,6 +104,7 @@ public:
 
 };
 
+using mint = modint<MOD>;
 template <ll MOD> vector<modint<MOD>> modint<MOD>::factorial_vec;
 
 ll gcd(ll a, ll b){
@@ -117,9 +119,9 @@ ll lcm(ll a, ll b){
 	return a*b / gcd(a, b);
 }
 
-ll powMod(ll x, ll n,ll MOD) {
+ll powMod(ll x, ll n) {
 	if (n == 0) return 1 % MOD;
-	ll val = powMod(x, n / 2,MOD);
+	ll val = powMod(x, n / 2);
 	val *= val;
 	val %= MOD;
 	if (n % 2 == 1) val *= x;
@@ -127,31 +129,30 @@ ll powMod(ll x, ll n,ll MOD) {
 }
 
 int main() {
-	ll n,p;cin>>n>>p;
-	vector<vector<ll>> dp(n+1, vector<ll>(n+1, 0));
-	vector<vector<ll>> sum(n+1, vector<ll>(n+2, 0));
-	ll x=powMod(25, p-2,p)*26LL%p;
-	dp[0][0] = x;
-	rep(i, 1, n+1) sum[0][i] = x;
-	vector<ll> nums={1,10,100,1000,10000};
-	rep(i, 1, n+1){
-		rep(j, 1, n+1){
-			rep(k,1,5){
-				if(j-k-1<0) break;
-				ll num1 = nums[k-1];
-				ll num2 = nums[k];
-				dp[i][j] += (sum[j-k-1][max(0LL,i-num1+1)]-sum[j-k-1][max(0LL,i-num2+1)])*25LL;
-				dp[i][j] %= p;
+	ll root = 450;
+	ll n;cin>>n;
+	vector<ll> a(n);
+	rep(i,0,n) cin>>a[i];
+	vector<mint> dp(n,0);
+	dp[0] = 1;
+	vector<vector<mint>> divs(root+1, vector<mint>(root,0));
+	rep(i,0,n){
+		rep(j,1,root+1){
+			dp[i] += divs[j][i%j];
+		}
+		if(a[i] > root){
+			ll index = i+a[i];
+			while(index < n){
+				dp[index] += dp[i];
+				index += a[i];
 			}
-			sum[j][i+1] = sum[j][i]+dp[i][j];
-			sum[j][i+1] %= p;
+		}
+		else{
+			divs[a[i]][i%a[i]] += dp[i];
 		}
 	}
-	ll ans = 0;
-	rep(i, 0, n){
-		ans += dp[n][i];
-		ans %= p;
-	}
-	cout << (ans+p)%p << endl;
+	mint ans = 0;
+	rep(i,0,n) ans += dp[i];
+	cout << ans << endl;
 	return 0;
 }

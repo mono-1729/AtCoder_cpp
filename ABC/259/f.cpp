@@ -6,7 +6,8 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
@@ -103,6 +104,7 @@ public:
 
 };
 
+using mint = modint<MOD>;
 template <ll MOD> vector<modint<MOD>> modint<MOD>::factorial_vec;
 
 ll gcd(ll a, ll b){
@@ -117,9 +119,9 @@ ll lcm(ll a, ll b){
 	return a*b / gcd(a, b);
 }
 
-ll powMod(ll x, ll n,ll MOD) {
+ll powMod(ll x, ll n) {
 	if (n == 0) return 1 % MOD;
-	ll val = powMod(x, n / 2,MOD);
+	ll val = powMod(x, n / 2);
 	val *= val;
 	val %= MOD;
 	if (n % 2 == 1) val *= x;
@@ -127,31 +129,46 @@ ll powMod(ll x, ll n,ll MOD) {
 }
 
 int main() {
-	ll n,p;cin>>n>>p;
-	vector<vector<ll>> dp(n+1, vector<ll>(n+1, 0));
-	vector<vector<ll>> sum(n+1, vector<ll>(n+2, 0));
-	ll x=powMod(25, p-2,p)*26LL%p;
-	dp[0][0] = x;
-	rep(i, 1, n+1) sum[0][i] = x;
-	vector<ll> nums={1,10,100,1000,10000};
-	rep(i, 1, n+1){
-		rep(j, 1, n+1){
-			rep(k,1,5){
-				if(j-k-1<0) break;
-				ll num1 = nums[k-1];
-				ll num2 = nums[k];
-				dp[i][j] += (sum[j-k-1][max(0LL,i-num1+1)]-sum[j-k-1][max(0LL,i-num2+1)])*25LL;
-				dp[i][j] %= p;
+	ll n;cin>>n;
+	vector<ll> d(n);
+	rep(i,0,n) cin>>d[i];
+	vector<vector<pll>> g(n,vector<pll>());
+	rep(i,0,n-1){
+		ll u,v,w;cin>>u>>v>>w;
+		u--;v--;
+		g[u].push_back({v,w});
+		g[v].push_back({u,w});
+	}
+	vector<pll> dp(n,{-INF,-INF});
+	auto dfs = [&](auto& dfs, ll v,ll p)->void{
+		vector<ll> sumple;
+		ll pcost=0;
+		ll idx=0;
+		ll sum=0;
+		for(auto nv:g[v]){
+			if(nv.first == p) {
+				pcost = nv.second;
+				continue;	
 			}
-			sum[j][i+1] = sum[j][i]+dp[i][j];
-			sum[j][i+1] %= p;
+			dfs(dfs,nv.first,v);
+			ll num = d[nv.first]==0?-INF:dp[nv.first].first-dp[nv.first].second;
+			sumple.push_back(num);
+			sum+=dp[nv.first].second;
 		}
-	}
-	ll ans = 0;
-	rep(i, 0, n){
-		ans += dp[n][i];
-		ans %= p;
-	}
-	cout << (ans+p)%p << endl;
+		sort(sumple.begin(),sumple.end(),greater<ll>());
+		while(idx<sumple.size() && sumple[idx]>0 && idx<d[v]-1){
+			sum+=sumple[idx];
+			idx++;
+		}
+		if(d[v]!=0)dp[v].first = sum+pcost;
+		else dp[v].first = sum;
+		if(idx<sumple.size() && sumple[idx]>0 && d[v]!=0)dp[v].second = sum+sumple[idx];
+		else dp[v].second = sum;
+	};
+	dfs(dfs,0,-1);
+	cout<<dp[0].second<<endl;
+	// rep(i,0,n){
+	// 	cout<<dp[i].first<<" "<<dp[i].second<<endl;
+	// }
 	return 0;
 }

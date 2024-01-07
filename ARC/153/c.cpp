@@ -6,6 +6,7 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
+//constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
@@ -127,97 +128,58 @@ ll powMod(ll x, ll n) {
 	return val % MOD;
 }
 
-/*
-中国剰余定理 :
-    m1とm2を互いに素な正の整数とする。
-        x ≡ b1 (mod. m1)
-        x ≡ b2 (mod. m2)
-    を満たす整数 x が 0 以上 m1, m2 未満にただ1つ存在する。
-
-    特にそれをｒとすると
-        x ≡ b1 (mod. m1), x ≡ b2 (mod. m2)
-        ↔ x ≡ r (mod. m1m2)
-    が成立する。
-
-アルゴリズム : 
-二元の場合 : 
-    x ≡ b1 (mod. m1), x ≡ b2 (mod. m2) の場合を解く。
-    d = gcd(m1, m2) として、拡張ユークリッドの互除法によって
-    m1*p+m2*q = d を満たす (p, q) を求め、
-    x = b1+m1((b2-b1)/d)*p とすればよい。
-    ( 
-        b1 = b2 (mod. gcd(m1, m2)) より、b2-b1はdで割り切れる。
-        s = ((b2-b1)/d) とおくと、m1*p+m2*q = d より、 
-        s*m1*p+s*m2*q = b2-b1 
-        →　s*m1*p+b1 = -s*m2*q+b2     
-        x=b1+s*m1*p(=b2−s*m2*q) とおくと、
-        x ≡ b1 (mod. m1), x ≡ b2 (mod. m2) が成り立っていることが分かる。
-    )
-*/
-
-// 2元の場合
-// 負の数にも対応した mod 
-inline ll mod(ll a, ll m) {
-    return (a % m + m) % m;
-}
-
-inline long long mul(long long a, long long b, long long m) {
-    a = mod(a, m); b = mod(b, m);
-    if (b == 0) return 0;
-    long long res = mul(mod(a + a, m), b>>1, m);
-    if (b & 1) res = mod(res + a, m);
-    return res;
-}
-
-// 拡張ユークリッドの互除法
-// ap+bq=gcd(a, b) となる (p, q) を求め、d = gcd(a, b) をリターンします。
-ll extGCD(ll a, ll b, ll &p, ll &q){
-    if (b == 0) {
-        p = 1;
-        q = 0;
-        return a;
-    }
-    ll d = extGCD(b, a%b, q, p);
-    q -= a/b*p;
-    return d;
-}
-
-// 中国剰余定理
-// リターン値を (r, m) とすると解は x = r (mod. m)
-// 解なしの場合は (0, -1) をリターン
-pll chineseRem(const vector<ll> &b, const vector<ll> &m){
-    ll r = 0, M = 1;
-    rep(i, 0, (int)b.size()){
-        ll p, q;
-        ll d = extGCD(M, m[i], p, q); // p is inv of m1/d (mod. m[i]/d)
-        if((b[i] - r) % d != 0) return {0, -1};
-        ll tmp = mul(((b[i] - r) / d), p, (m[i] / d));
-        r += M * tmp;
-        M *= m[i] / d;
-    }
-    return {mod(r, M), M};
-}
-//pll res = chineseRem({2, 3}, {3, 5});
-//cout << "x ≡ " << res.first << " (mod. "  << res.second << ")" << endl;
-
 int main() {
-	ll t;cin>>t;
-	rep(_,0,t){
-		ll x,y,p,q;cin>>x>>y>>p>>q;
-		ll ans = INF;
-		for(ll t1=x;t1<x+y;t1++){
-			for(ll t2=p;t2<p+q;t2++){
-				ll m1 = x+y;
-				ll m2 = p+q;
-				ll b1 = t1;
-				ll b2 = t2;
-				pll res = chineseRem({b1, b2}, {m1*2, m2});
-				if(res.second == -1) continue;
-				chmin(ans, res.first);
+	ll n;cin>>n;
+	vector<ll> a(n);
+	rep(i,0,n) cin>>a[i];
+	vector<ll> ans(n);
+	ll sum=0,tmp=0;
+	ll plusf=INF,minusf=INF,plusb=-1,minusb=-1;
+	rep(i,0,n){
+		ans[i]=i+1;
+		sum+=(i+1)*a[i];
+		tmp+=a[i];
+		if(tmp==1) chmin(plusf,i);
+		if(tmp==-1) chmin(minusf,i);
+	}
+	tmp=0;
+	rrep(i,n-1,0){
+		tmp+=a[i];
+		if(tmp==1) chmax(plusb,i);
+		if(tmp==-1) chmax(minusb,i);
+	}
+	if(sum>0){
+		if(minusb==-1 && plusf==INF){
+			cout<<"No"<<endl;
+			return 0;
+		}
+		if(plusf!=INF){
+			rep(i,0,plusf+1){
+				ans[i]-=sum;
+			}
+		}else if(minusb!=-1){
+			rep(i,minusb,n){
+				ans[i]+=sum;
 			}
 		}
-		if(ans==INF) cout<<"infinity"<<endl;
-		else cout<<ans<<endl;
+	}else if(sum<0){
+		if(plusb==-1 && minusf==INF){
+			cout<<"No"<<endl;
+			return 0;
+		}
+		if(minusf!=INF){
+			rep(i,0,minusf+1){
+				ans[i]+=sum;
+			}
+		}else if(plusb!=-1){
+			rep(i,plusb,n){
+				ans[i]-=sum;
+			}
+		}
 	}
+	//cout<<sum<<" "<<plusf<<" "<<minusf<<" "<<plusb<<" "<<minusb<<endl;
+	cout<<"Yes"<<endl;
+	rep(i,0,n) cout<<ans[i]<<" ";
+	cout<<endl;
 	return 0;
 }

@@ -6,7 +6,8 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
@@ -103,6 +104,7 @@ public:
 
 };
 
+using mint = modint<MOD>;
 template <ll MOD> vector<modint<MOD>> modint<MOD>::factorial_vec;
 
 ll gcd(ll a, ll b){
@@ -117,9 +119,9 @@ ll lcm(ll a, ll b){
 	return a*b / gcd(a, b);
 }
 
-ll powMod(ll x, ll n,ll MOD) {
+ll powMod(ll x, ll n) {
 	if (n == 0) return 1 % MOD;
-	ll val = powMod(x, n / 2,MOD);
+	ll val = powMod(x, n / 2);
 	val *= val;
 	val %= MOD;
 	if (n % 2 == 1) val *= x;
@@ -127,31 +129,36 @@ ll powMod(ll x, ll n,ll MOD) {
 }
 
 int main() {
-	ll n,p;cin>>n>>p;
-	vector<vector<ll>> dp(n+1, vector<ll>(n+1, 0));
-	vector<vector<ll>> sum(n+1, vector<ll>(n+2, 0));
-	ll x=powMod(25, p-2,p)*26LL%p;
-	dp[0][0] = x;
-	rep(i, 1, n+1) sum[0][i] = x;
-	vector<ll> nums={1,10,100,1000,10000};
-	rep(i, 1, n+1){
-		rep(j, 1, n+1){
-			rep(k,1,5){
-				if(j-k-1<0) break;
-				ll num1 = nums[k-1];
-				ll num2 = nums[k];
-				dp[i][j] += (sum[j-k-1][max(0LL,i-num1+1)]-sum[j-k-1][max(0LL,i-num2+1)])*25LL;
-				dp[i][j] %= p;
-			}
-			sum[j][i+1] = sum[j][i]+dp[i][j];
-			sum[j][i+1] %= p;
+	ll n,m;cin>>n>>m;
+	vector<ll> a(n);
+	rep(i,0,n) cin>>a[i];
+	vector<vector<ll>> g(n);
+	rep(i,0,m){
+		ll x,y;cin>>x>>y;
+		x--;y--;
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+	vector<ll> ans(n, 0);
+	ans[0]=1;
+	priority_queue<tuple<ll,ll,ll>, vector<tuple<ll,ll,ll>>, greater<tuple<ll,ll,ll>>> q;
+	vector<bool> used(n, false);
+	q.push({a[0],-1, 0});
+	while(!q.empty()){
+		auto [cost, num, pos] = q.top();q.pop();
+		num=-num;
+		//cout<<cost<<" "<<num<<" "<<pos<<endl;
+		if(used[pos]) continue;
+		if(ans[pos]>num) continue;
+		ans[pos] = num;
+		for(auto to : g[pos]){
+			if(a[to] < a[pos]) continue;
+			ll next = a[to]==a[pos] ? num : num+1;
+			q.push({a[to],-next, to});
 		}
+		used[pos] = true;
 	}
-	ll ans = 0;
-	rep(i, 0, n){
-		ans += dp[n][i];
-		ans %= p;
-	}
-	cout << (ans+p)%p << endl;
+	cout << ans[n-1] << endl;
+	//rep(i,0,n) cout << ans[i] << " ";
 	return 0;
 }
