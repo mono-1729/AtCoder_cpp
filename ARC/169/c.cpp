@@ -130,28 +130,47 @@ ll powMod(ll x, ll n) {
 
 int main() {
 	ll n;cin>>n;
-	vector<ll> a(n);
-	rep(i,0,n) cin>>a[i];
-	vector<vector<mint>> dp(n+1,vector<mint>(n+1,0));
-	dp[0][0] = 1;
-	mint sum=1;
-	pll pre={-1,-1},ppre={-1,-1};
-	rep(i,0,n){
-		mint x = 0;
-		rep(j,1,n+1){
-			if(a[i]!=-1 && a[i]!=j) continue;
-			dp[i+1][j]=sum;
-			if(pre.first==-1 || pre.second<i-j|| (pre.first==j && (ppre.first==-1|| ppre.second<i-j))) dp[i+1][j]-=dp[max(0LL,i-j+1)][j];
-			x+=dp[i+1][j];
-		}
-		if(a[i]!=-1 && pre.first!=a[i]){
-			swap(pre,ppre);
-			pre={a[i],i};
-		}
-		swap(sum,x);
-		// rep(j,1,n+1) cout<<dp[i+1][j]<<" ";
-		// cout<<endl;
+	vector<ll> a(n+1);
+	a[0] = 10000;
+	rep(i, 1, n+1) {
+		cin>>a[i];
+		if(a[i]!=-1)a[i]--;
 	}
-	cout<<sum<<endl;
+	vector<vector<mint>> dp(n+1, vector<mint>(n, 0));
+	struct que
+	{
+		mint sum;
+		queue<mint> q;
+	};
+	vector<que> cnt(n, {0, queue<mint>()});
+	mint sum=1;
+	rep(i,1,n+1){
+		mint tmp=0;
+		rep(j,0,n){
+			if(a[i]!=-1&&a[i]!=j){
+				dp[i][j]=0;
+				cnt[j].sum=0;
+				cnt[j].q=queue<mint>();
+				continue;
+			}
+			dp[i][j]+=sum-dp[i-1][j];
+			dp[i][j]+=cnt[j].sum;
+			cnt[j].q.push(sum-dp[i-1][j]);
+			cnt[j].sum+=sum-dp[i-1][j];
+			if(cnt[j].q.size()>j) {
+				cnt[j].sum-=cnt[j].q.front();
+				cnt[j].q.pop();
+			}
+			tmp+=dp[i][j];
+		}
+		swap(sum, tmp);
+	}
+	mint ans=0;
+	rep(i,0,n) ans+=dp[n][i];
+	cout<<ans<<endl;
+	// rep(i,0,n+1){
+	// 	rep(j,0,n) cout<<dp[i][j]<<" ";
+	// 	cout<<endl;
+	// }
 	return 0;
 }
