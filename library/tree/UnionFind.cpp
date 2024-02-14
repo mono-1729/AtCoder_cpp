@@ -78,16 +78,16 @@ public:
         if(parent[rx] > parent[ry]) swap(rx, ry);
         parent[rx] += parent[ry];
         parent[ry] = rx;
-        maxi[x] = std::max(maxi[x],maxi[y]);
-        mini[x] = std::min(mini[x],mini[y]);
+        maxi[rx] = std::max(maxi[rx],maxi[ry]);
+        mini[rx] = std::min(mini[rx],mini[ry]);
     }
 
     inline ll min(ll x){
         return mini[root(x)];
     }
 
-    inline ll max(int x){
-        return mini[root(x)];
+    inline ll max(ll x){
+        return maxi[root(x)];
     }
 
     inline ll size(ll x){
