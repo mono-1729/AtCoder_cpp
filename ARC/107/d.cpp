@@ -130,28 +130,21 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
-    }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
+    ll n,k;cin>>n>>k;
+    vector<vector<mint>> dp(n+1,vector<mint>(n+1,0));
+    vector<vector<ll>> check(n+1,vector<ll>(n+1,0));
+    auto solve = [&](auto& solve,ll i,ll j)->mint{
+        if(i<j || j<0) return 0;
+        else if(i==0){
+            if(j==0) return 1;
+            else return 0;
         }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
-    }
-    rep(i,0,n) cout<<ans[i]<<endl;
+        else if(j==0) return 0;
+        if(check[i][j]==1) return dp[i][j];
+        mint res=solve(solve,i-1,j-1)+solve(solve,i,2*j);
+        check[i][j]=1;
+        return dp[i][j]=res;
+    };
+    cout<<solve(solve,n,k)<<endl;
     return 0;
 }

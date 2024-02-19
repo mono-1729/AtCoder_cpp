@@ -130,28 +130,48 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
     ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
+    string s;cin>>s;
+    vector<ll> a(n,0);
+    vector<ll> b(n,0);
+    rep(i,0,n){
+        if(s[i]=='A')a[i]++;
+        else a[i]--;
+        if(i>0)a[i]+=a[i-1];
+        b[i]=a[i];
     }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
+    ll ans=1;
+    pll pre;
+    if(a[0]>0)pre.first=1;
+    else if(a[0]<0)pre.first=-1;
+    else pre.first=0;
+    if(a[1]>0)pre.second=1;
+    else if(a[1]<0)pre.second=-1;
+    else pre.second=0;
+    rep(i,0,n-1){
+        if(s[i]=='B' && s[i+1]=='A'){
+            a[i]+=2;
+        }else if(s[i]=='A' && s[i+1]=='B'){
+            a[i]-=2;
         }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
+        pll now;
+        if(a[i]>0)now.first=1;
+        else if(a[i]<0)now.first=-1;
+        else now.first=0;
+        if(a[i+1]>0)now.second=1;
+        else if(a[i+1]<0)now.second=-1;
+        else now.second=0;
+        pll x;
+        if(b[i]>0)x.first=1;
+        else if(b[i]<0)x.first=-1;
+        else x.first=0;
+        if(b[i+1]>0)x.second=1;
+        else if(b[i+1]<0)x.second=-1;
+        else x.second=0;
+        if(pre!=now && x!=now) ans++;
+        pre=now;
+        swap(s[i],s[i+1]);
     }
-    rep(i,0,n) cout<<ans[i]<<endl;
+    cout<<ans<<endl;
     return 0;
 }

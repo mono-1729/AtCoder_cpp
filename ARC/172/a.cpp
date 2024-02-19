@@ -130,28 +130,54 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
+    ll h,w,n;cin>>h>>w>>n;
+    vector<ll> a(n);
+    rep(i,0,n)cin>>a[i];
+    vector<ll> count(31,0);
+    rep(i,0,n){
+        count[a[i]]++;
     }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
+    vector<ll> num(31,0);
+    vector<ll> pownum(31,0);
+    rep(i,0,31){
+        pownum[i]=pow(2,i);
+    }
+    auto cut = [&](auto& cut,ll x,ll y)->void{
+        if(x==0||y==0)return;
+        if(x>y)swap(x,y);
+        ll xx =x;
+        ll yy =y;
+        ll z =-1;
+        rrep(i,30,0){
+            if(x>>i&1){
+                z = i;
+                break;
+            }
         }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
+        rrep(i,z,0){
+            num[i]+=(xx/pownum[i])*pownum[z-i];
+            xx%=pownum[i];
+        }
+        yy-=pownum[z];
+        rrep(i,z,0){
+            num[i]+=(yy/pownum[i])*pownum[z-i];
+            yy%=pownum[i];
+        }
+        cut(cut,x-pownum[z],y-pownum[z]);
+    };
+    cut(cut,h,w);
+    rrep(i,30,1){
+        if(num[i]>count[i]){
+            num[i-1]+=4*(num[i]-count[i]);
+            num[i]=count[i];
+        }
     }
-    rep(i,0,n) cout<<ans[i]<<endl;
+    rep(i,0,31){
+        if(num[i]<count[i]){
+            cout<<"No"<<endl;
+            return 0;
+        }
+    }
+    cout<<"Yes"<<endl;
     return 0;
 }
