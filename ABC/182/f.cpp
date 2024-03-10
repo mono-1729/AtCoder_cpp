@@ -130,64 +130,37 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
+    ll n,x_;cin>>n>>x_;
+    vector<ll> a(n);
+    rep(i,0,n)cin>>a[i];
+    vector<ll> x(n);
+    rrep(i,n-1,0){
+        x[i]=x_/a[i];
+        x_%=a[i];
     }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
-        }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
-    }
-    rep(i,0,n) cout<<ans[i]<<endl;
-    return 0;
-}
-
-//tuple版
-int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<double> ans(n,0);
-    vector<tuple<ll,ll,ll>>pos;
-    map<pll,ll>mp;
+    vector<ll> t(n);
+    rep(i,0,n-1)t[i]=a[i+1]/a[i];
+    t[n-1]=INF;
+    vector<ll> dp(2);
+    dp[0]=1;
     rep(i,0,n){
-        ll x,y;cin>>x>>y;
-        if(mp[{x,y}]==0)pos.push_back({x,y,i});
-        mp[{x,y}]++;
-    }
-    sort(pos.begin(),pos.end());
-    vector<tuple<ll,ll,ll>> up,down;
-    rrep(i,n-1,0){
-        while(up.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(up[up.size()-1]),get<1>(pos[i])-get<1>(up[up.size()-1])};
-            pll vec2 = {get<0>(up[up.size()-2])-get<0>(up[up.size()-1]),get<1>(up[up.size()-2])-get<1>(up[up.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<=0) up.pop_back();
-            else break;
+        vector<ll> ndp(2);
+        rep(j,0,2)rep(nj,0,2){
+            {
+                ll z = -x[i]-j+t[i]*nj;
+                if(0<=z && z< t[i]){
+                    ndp[nj]+=dp[j];
+                }
+            }
+            {
+                ll y = x[i]+j -t[i]*nj;
+                if(0<y && y< t[i]){
+                    ndp[nj]+=dp[j];
+                }
+            }
         }
-        up.push_back(pos[i]);
+        swap(dp,ndp);
     }
-    rrep(i,n-1,0){
-        while(down.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(down[down.size()-1]),get<1>(pos[i])-get<1>(down[down.size()-1])};
-            pll vec2 = {get<0>(down[down.size()-2])-get<0>(down[down.size()-1]),get<1>(down[down.size()-2])-get<1>(down[down.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)>=0) down.pop_back();
-            else break;
-        }
-        down.push_back(pos[i]);
-    }
-    rrep(i,down.size()-2,1)up.push_back(down[i]);
+    cout<<dp[0]<<endl;
     return 0;
 }

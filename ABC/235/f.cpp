@@ -130,64 +130,48 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
+    string n;cin>>n;
+    ll m;cin>>m;
+    ll c=0;
+    rep(i,0,m){
+        ll x;cin>>x;
+        c|=1LL<<x;
     }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
+    vector<vector<vector<pair<mint,mint>>>> dp(n.size()+1,vector<vector<pair<mint,mint>>>(1LL<<10,vector<pair<mint,mint>>(2,{0,0})));
+    dp[0][0][0]={1,0};
+    rep(i,0,n.size()){
+        rep(j,0,1LL<<10){
+            rep(k,0,10){
+                if(j==0 && k==0){
+                    dp[i+1][j][1].first+=dp[i][j][1].first;
+                    dp[i+1][j][1].second+=dp[i][j][1].second*10+dp[i][j][1].first*k;
+                    continue;
+                }
+                dp[i+1][j|(1<<k)][1].first+=dp[i][j][1].first;
+                dp[i+1][j|(1<<k)][1].second+=dp[i][j][1].second*10+dp[i][j][1].first*k;
+            }
+            rep(k,0,n[i]-'0'){
+                if(j==0 && k==0){
+                    dp[i+1][j][1].first+=dp[i][j][0].first;
+                    dp[i+1][j][1].second+=dp[i][j][0].second*10+dp[i][j][0].first*k;
+                    continue;
+                }
+                dp[i+1][j|(1LL<<k)][1].first+=dp[i][j][0].first;
+                dp[i+1][j|(1LL<<k)][1].second+=dp[i][j][0].second*10+dp[i][j][0].first*k;
+            }
+            dp[i+1][j|(1LL<<(n[i]-'0'))][0].first+=dp[i][j][0].first;
+            dp[i+1][j|(1LL<<(n[i]-'0'))][0].second+=dp[i][j][0].second*10+dp[i][j][0].first*(n[i]-'0');
         }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
     }
-    rep(i,0,n) cout<<ans[i]<<endl;
-    return 0;
-}
-
-//tuple版
-int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<double> ans(n,0);
-    vector<tuple<ll,ll,ll>>pos;
-    map<pll,ll>mp;
-    rep(i,0,n){
-        ll x,y;cin>>x>>y;
-        if(mp[{x,y}]==0)pos.push_back({x,y,i});
-        mp[{x,y}]++;
+    mint ans=0;
+    rep(i,0,1LL<<10){
+        if((i|c)==i)ans+=dp[n.size()][i][1].second+dp[n.size()][i][0].second;
+        // if((i|c)==i && dp[n.size()][i][1].second+dp[n.size()][i][0].second>0){
+        //     rep(x,0,10)if(i>>x&1) cout<<x<<" ";
+        //     cout<<endl;
+        //     cout<<dp[n.size()][i][1].second<<" "<<dp[n.size()][i][0].second<<endl;
+        // }
     }
-    sort(pos.begin(),pos.end());
-    vector<tuple<ll,ll,ll>> up,down;
-    rrep(i,n-1,0){
-        while(up.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(up[up.size()-1]),get<1>(pos[i])-get<1>(up[up.size()-1])};
-            pll vec2 = {get<0>(up[up.size()-2])-get<0>(up[up.size()-1]),get<1>(up[up.size()-2])-get<1>(up[up.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<=0) up.pop_back();
-            else break;
-        }
-        up.push_back(pos[i]);
-    }
-    rrep(i,n-1,0){
-        while(down.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(down[down.size()-1]),get<1>(pos[i])-get<1>(down[down.size()-1])};
-            pll vec2 = {get<0>(down[down.size()-2])-get<0>(down[down.size()-1]),get<1>(down[down.size()-2])-get<1>(down[down.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)>=0) down.pop_back();
-            else break;
-        }
-        down.push_back(pos[i]);
-    }
-    rrep(i,down.size()-2,1)up.push_back(down[i]);
+    cout<<ans<<endl;
     return 0;
 }

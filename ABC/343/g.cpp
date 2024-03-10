@@ -129,65 +129,84 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
-    }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
-        }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
-    }
-    rep(i,0,n) cout<<ans[i]<<endl;
-    return 0;
+int Z_algorithm(string S) {
+	int c = 0, n = S.size();
+	vector<int> Z(n, 0);
+    ll res = 0;
+	for (int i = 1; i < n; i++) {
+		int l = i - c;
+		if (i + Z[l] < c + Z[c]) {
+			Z[i] = Z[l];
+		}
+		else {
+			int j = max(0, c + Z[c] - i);
+			while (i + j < n && S[j] == S[i + j])j++;
+			Z[i] = j;
+			c = i;
+		}
+        chmax(res,Z[i]);
+	}
+	Z[0] = n;
+	return res;
 }
 
-//tuple版
+int Z_algorithm2(string S) {
+	int c = 0, n = S.size();
+	vector<int> Z(n, 0);
+    ll res = 0;
+	for (int i = 1; i < n; i++) {
+		int l = i - c;
+		if (i + Z[l] < c + Z[c]) {
+			Z[i] = Z[l];
+		}
+		else {
+			int j = max(0, c + Z[c] - i);
+			while (i + j < n && S[j] == S[i + j])j++;
+			Z[i] = j;
+			c = i;
+		}
+        if(Z[i]+i==n)chmax(res,Z[i]);
+	}
+	Z[0] = n;
+	return res;
+}
+
 int main() {
-    cout<<fixed<<setprecision(15);
     ll n;cin>>n;
-    vector<double> ans(n,0);
-    vector<tuple<ll,ll,ll>>pos;
-    map<pll,ll>mp;
+    vector<string> svec(n);
+    rep(i,0,n)cin>>svec[i];
+    sort(svec.begin(),svec.end(),[](const auto s1, const auto s2){
+        return s1.size()>s2.size();
+    });
+    vector<ll> use(n,1);
     rep(i,0,n){
-        ll x,y;cin>>x>>y;
-        if(mp[{x,y}]==0)pos.push_back({x,y,i});
-        mp[{x,y}]++;
-    }
-    sort(pos.begin(),pos.end());
-    vector<tuple<ll,ll,ll>> up,down;
-    rrep(i,n-1,0){
-        while(up.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(up[up.size()-1]),get<1>(pos[i])-get<1>(up[up.size()-1])};
-            pll vec2 = {get<0>(up[up.size()-2])-get<0>(up[up.size()-1]),get<1>(up[up.size()-2])-get<1>(up[up.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<=0) up.pop_back();
-            else break;
+        string s=svec[i];
+        rep(j,0,i){
+            string ss= svec[j];
+            string x;
+            x=s+'&'+ss;
+            if(Z_algorithm(x)>=s.size()) use[i]=0;
         }
-        up.push_back(pos[i]);
     }
-    rrep(i,n-1,0){
-        while(down.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(down[down.size()-1]),get<1>(pos[i])-get<1>(down[down.size()-1])};
-            pll vec2 = {get<0>(down[down.size()-2])-get<0>(down[down.size()-1]),get<1>(down[down.size()-2])-get<1>(down[down.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)>=0) down.pop_back();
-            else break;
-        }
-        down.push_back(pos[i]);
+    vector<string> S;
+    rep(i,0,n)if(use[i])S.push_back(svec[i]);
+    n=S.size();
+    vector<vector<ll>> prefix(n,vector<ll>(n,0));
+    rep(i,0,n)rep(j,0,n){
+        if(i==j)continue;
+        prefix[i][j]=Z_algorithm2(S[j]+'&'+S[i]);
     }
-    rrep(i,down.size()-2,1)up.push_back(down[i]);
+    vector<vector<ll>> dp(1<<n,vector<ll>(n,INF));
+    rep(i,0,n)dp[1<<i][i]=S[i].size();
+    rep(i,1,1<<n)rep(j,0,n)rep(k,0,n){
+        if(!(i>>k&1))chmin(dp[i+(1<<k)][k],dp[i][j]+S[k].size()-prefix[j][k]);
+    }
+    ll ans=INF;
+    rep(i,0,n)chmin(ans,dp[(1<<n)-1][i]);
+    cout<<ans<<endl;
+    // rep(i,0,n){
+    //     rep(j,0,n)cout<<prefix[i][j]<<" ";
+    //     cout<<endl;
+    // }
     return 0;
 }

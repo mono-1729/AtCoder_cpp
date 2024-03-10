@@ -130,64 +130,67 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
     ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
-    rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
-    }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
+    vector<vector<ll>> p(n, vector<ll>(n)),r(n, vector<ll>(n-1)),d(n-1, vector<ll>(n));
+    rep(i,0,n)rep(j,0,n)cin>>p[i][j];
+    rep(i,0,n)rep(j,0,n-1)cin>>r[i][j];
+    rep(i,0,n-1)rep(j,0,n)cin>>d[i][j];
+    vector<vector<vector<vector<pll>>>> dp(n, vector<vector<vector<pll>>>(n, vector<vector<pll>>(n, vector<pll>(n, {INF,0}))));
+    dp[0][0][0][0] = {0,0};
+    rep(i,0,n)rep(j,0,n)rep(k,0,n)rep(l,0,n){
+        if(dp[i][j][k][l].first == INF) continue;
+        ll cost=dp[i][j][k][l].first, money=-dp[i][j][k][l].second;
+        if(i+1 < n){
+            ll nc=cost+1, nm=money-d[i][j];
+            if(nm < 0){
+                ll tmp=abs(nm)/p[k][l];
+                nc+=tmp;
+                nm+=p[k][l]*tmp;
+                if(nm < 0){
+                    nm+=p[k][l];
+                    nc++;
+                }
+            }
+            ll nk=k, nl=l;
+            if(p[i+1][j] > p[k][l]){
+                nk=i+1;
+                nl=j;
+            }
+            chmin(dp[i+1][j][nk][nl],make_pair(nc,-nm));
         }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
-    }
-    rep(i,0,n) cout<<ans[i]<<endl;
-    return 0;
-}
-
-//tuple版
-int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<double> ans(n,0);
-    vector<tuple<ll,ll,ll>>pos;
-    map<pll,ll>mp;
-    rep(i,0,n){
-        ll x,y;cin>>x>>y;
-        if(mp[{x,y}]==0)pos.push_back({x,y,i});
-        mp[{x,y}]++;
-    }
-    sort(pos.begin(),pos.end());
-    vector<tuple<ll,ll,ll>> up,down;
-    rrep(i,n-1,0){
-        while(up.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(up[up.size()-1]),get<1>(pos[i])-get<1>(up[up.size()-1])};
-            pll vec2 = {get<0>(up[up.size()-2])-get<0>(up[up.size()-1]),get<1>(up[up.size()-2])-get<1>(up[up.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<=0) up.pop_back();
-            else break;
+        if(j+1 < n){
+            ll nc=cost+1, nm=money-r[i][j];
+            if(nm < 0){
+                ll tmp=abs(nm)/p[k][l];
+                nc+=tmp;
+                nm+=p[k][l]*tmp;
+                if(nm < 0){
+                    nm+=p[k][l];
+                    nc++;
+                }
+            }
+            ll nk=k, nl=l;
+            if(p[i][j+1] > p[k][l]){
+                nk=i;
+                nl=j+1;
+            }
+            chmin(dp[i][j+1][nk][nl],make_pair(nc,-nm));
         }
-        up.push_back(pos[i]);
     }
-    rrep(i,n-1,0){
-        while(down.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(down[down.size()-1]),get<1>(pos[i])-get<1>(down[down.size()-1])};
-            pll vec2 = {get<0>(down[down.size()-2])-get<0>(down[down.size()-1]),get<1>(down[down.size()-2])-get<1>(down[down.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)>=0) down.pop_back();
-            else break;
-        }
-        down.push_back(pos[i]);
+    ll ans=INF;
+    rep(i,0,n)rep(j,0,n){
+        chmin(ans,dp[n-1][n-1][i][j].first);
     }
-    rrep(i,down.size()-2,1)up.push_back(down[i]);
+    cout<<ans<<endl;
+    // rep(i,0,n){
+    //     rep(j,0,n){
+    //         ll x =INF;
+    //         rep(k,0,n)rep(l,0,n){
+    //             chmin(x,dp[i][j][k][l].first);
+    //         }
+    //         cout<<x<<" ";
+    //     }
+    //     cout<<endl;
+    // }
     return 0;
 }

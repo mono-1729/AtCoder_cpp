@@ -130,64 +130,17 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<pll> pos(n+1);
-    pos[0]={0,0};
-    ll sum=0;
+    string s;cin>>s;
+    int n=s.size();
+    vector<int> num(n+1,0);
+    rep(i,0,n) num[i+1]=num[i]^(1<<(s[i]-'a'));
+    vector<int> dist(1<<26,IINF);
+    dist[0]=0;
     rep(i,1,n+1){
-        ll a;cin>>a;
-        sum+=a;
-        pos[i]={i,sum};
-    }
-    vector<double> ans(n,0);
-    vector<pll> conv;
-    rrep(i,n,0){
-        while(conv.size()>=2){
-            pll vec1 = {pos[i].first-conv[conv.size()-1].first,pos[i].second-conv[conv.size()-1].second};
-            pll vec2 = {conv[conv.size()-2].first-conv[conv.size()-1].first,conv[conv.size()-2].second-conv[conv.size()-1].second};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<0) conv.pop_back();
-            else break;
+        rep(j,0,26){
+            chmin(dist[num[i]],dist[num[i]^(1LL<<j)]+1);
         }
-        if(i<n)ans[i]=(conv.back().second-pos[i].second)/(double)(conv.back().first-pos[i].first);
-        conv.push_back(pos[i]);
     }
-    rep(i,0,n) cout<<ans[i]<<endl;
-    return 0;
-}
-
-//tuple版
-int main() {
-    cout<<fixed<<setprecision(15);
-    ll n;cin>>n;
-    vector<double> ans(n,0);
-    vector<tuple<ll,ll,ll>>pos;
-    map<pll,ll>mp;
-    rep(i,0,n){
-        ll x,y;cin>>x>>y;
-        if(mp[{x,y}]==0)pos.push_back({x,y,i});
-        mp[{x,y}]++;
-    }
-    sort(pos.begin(),pos.end());
-    vector<tuple<ll,ll,ll>> up,down;
-    rrep(i,n-1,0){
-        while(up.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(up[up.size()-1]),get<1>(pos[i])-get<1>(up[up.size()-1])};
-            pll vec2 = {get<0>(up[up.size()-2])-get<0>(up[up.size()-1]),get<1>(up[up.size()-2])-get<1>(up[up.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)<=0) up.pop_back();
-            else break;
-        }
-        up.push_back(pos[i]);
-    }
-    rrep(i,n-1,0){
-        while(down.size()>=2){
-            pll vec1 = {get<0>(pos[i])-get<0>(down[down.size()-1]),get<1>(pos[i])-get<1>(down[down.size()-1])};
-            pll vec2 = {get<0>(down[down.size()-2])-get<0>(down[down.size()-1]),get<1>(down[down.size()-2])-get<1>(down[down.size()-1])};
-            if((vec1.first*vec2.second-vec1.second*vec2.first)>=0) down.pop_back();
-            else break;
-        }
-        down.push_back(pos[i]);
-    }
-    rrep(i,down.size()-2,1)up.push_back(down[i]);
+    cout<<max(1,dist[num[n]])<<endl;
     return 0;
 }
