@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <unordered_map>
 #include <stdlib.h>
 using namespace std;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
@@ -6,7 +7,7 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
+//constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
@@ -16,6 +17,7 @@ template <ll MOD> class modint {
 	ll val;
 	static vector<modint<MOD>> factorial_vec;
 public:
+	ll get() const { return (ll)val; }
 	// コンストラクタ
 	modint(ll x = 0){
 		val = x % MOD;
@@ -106,7 +108,7 @@ public:
 using mint = modint<MOD>;
 template <ll MOD> vector<modint<MOD>> modint<MOD>::factorial_vec;
 
-int gcd(int a, int b){
+ll gcd(ll a, ll b){
 	if(a%b == 0){
 	  return b;
 	}else{
@@ -114,7 +116,7 @@ int gcd(int a, int b){
 	}
 }
 
-int lcm(int a, int b){
+ll lcm(ll a, ll b){
 	return a*b / gcd(a, b);
 }
 
@@ -128,6 +130,32 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-	
+	ll n;cin>>n;
+	vector<ll> x(n+2),y(n+2);
+	x[0]=-INF,x[n+1]=INF;
+	y[0]=0,y[n+1]=0;
+	rep(i,1,n+1)cin>>x[i];
+	rep(i,1,n+1)cin>>y[i];
+	vector<pll> l,r;
+	rep(i,0,n+1){
+		if(y[i]>y[i+1]){
+			r.push_back({y[i]-y[i+1],x[i+1]-1});
+		}
+		if(y[i]<y[i+1]){
+			l.push_back({y[i+1]-y[i],x[i]+1});
+		}
+	}
+	ll ans=INF;
+	ll lidx = 0, ridx = 0;
+	while(lidx<l.size()){
+		chmin(ans,r[ridx].second-l[lidx].second);
+		ll num = min(r[ridx].first,l[lidx].first);
+		r[ridx].first-=num;
+		l[lidx].first-=num;
+		if(r[ridx].first==0)ridx++;
+		if(l[lidx].first==0)lidx++;
+	}
+	if(ans>1e9) cout<<-1<<endl;
+	else cout<<ans<<endl;
 	return 0;
 }
