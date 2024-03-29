@@ -67,3 +67,20 @@ ll max_flow(ll s, ll t) {
 		}
 	}
 }
+
+vector<ll> mincut(ll s) {
+    vector<ll> ret(MAX_V);
+    queue<ll> que;
+    que.push(s);
+    ret.push_back(s);
+    while(!que.empty()) {
+        ll v = que.front(); que.pop();
+        for(auto &e : g[v]) {
+            if(e.cap > 0 && ret[e.to] == 0) {
+                que.push(e.to);
+                ret[e.to] = 1;
+            }
+        }
+    }
+    return ret;
+}
