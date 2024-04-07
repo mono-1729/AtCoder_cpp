@@ -16,7 +16,7 @@ struct edge {
 	edge(ll to, ll cap, ll cost, ll rev) : to(to), cap(cap), cost(cost), rev(rev) {}
 };
 
-ll n;
+ll V=MAX_V;
 vector<edge> g[MAX_V];
 ll dist[MAX_V];
 ll prevv[MAX_V], preve[MAX_V];
@@ -29,12 +29,12 @@ void add_edge(ll from, ll to, ll cap, ll cost) {
 ll min_cost_flow(ll s, ll t, ll f) {
 	ll res = 0;
 	while(f > 0) {
-		fill(dist, dist + n, INF);
+		fill(dist, dist + V, INF);
 		dist[s] = 0;
 		bool update = true;
 		while(update) {
 			update = false;
-			rep(v, 0, n) {
+			rep(v, 0, V) {
 				if(dist[v] == INF) continue;
 				rep(i, 0, g[v].size()) {
 					edge &e = g[v][i];
