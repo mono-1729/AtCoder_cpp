@@ -7,6 +7,8 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
 class xor_set{
 private:
@@ -25,8 +27,17 @@ public:
         if(x == 0) return 1;
         else return 0;
     }
+    vector<ll> get(){return w;}
 };
 
 int main() {
+    xor_set st;
+    vector<ll> w = st.get();
+    sort(w.begin(),w.end(),greater<ll>());
+    rep(i,0,w.size()){
+        rep(j,0,i)chmin(w[i],w[i]^w[j]);
+        rep(j,0,i)chmin(w[j],w[i]^w[j]);
+    }
+    sort(w.begin(),w.end());
     return 0;
 }
