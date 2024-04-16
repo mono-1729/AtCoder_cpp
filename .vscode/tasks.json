@@ -15,7 +15,9 @@
           "-ggdb",
           "${file}",
           "-o",
-          "${fileDirname}/${fileBasenameNoExtension}"
+          "${fileDirname}/${fileBasenameNoExtension}",
+          "-I",
+          "${workspaceFolder}/ac-library/"
         ],
         "problemMatcher": ["$gcc"],
         "group": {

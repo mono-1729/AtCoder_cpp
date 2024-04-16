@@ -45,19 +45,78 @@ int main() {
     ll n,m;cin>>n>>m;
     vector<vector<pll>> g(n);
     rep(i,0,m){
-        ll u,v,s;
+        ll u,v,s;cin>>u>>v>>s;
         u--;v--;
         g[u].push_back({v,s});
         g[v].push_back({u,s});
     }
-    vector<ll>plus(n,INF),minus(n,INF);
+    vector<ll>plus(n,-INF),minus(n,INF);
     plus[0]=0;
-    queue<ll> q;
-    q.push(0);
+    queue<tuple<ll,ll,ll>> q;
+    q.push({0,0,1});
     vector<ll> check(n,0);
-    check[0]=0;
+    check[0]=1;
+    ll mi = 1,ma = INF;
     while(!q.empty()){
-        ll v = q.
+        ll v,num,sign;tie(v,num,sign)=q.front();q.pop();
+        sign = -sign;
+        for(auto p:g[v]){
+            ll nv = p.first, s = p.second;
+            ll nnum = s-num;
+            if(sign==1){
+                if(check[nv]==0){
+                    plus[nv]=nnum;
+                    chmax(mi,-nnum+1);
+                    check[nv]=1;
+                    q.push({nv,nnum,sign});
+                }
+                else{
+                    if(plus[nv]!=-INF && plus[nv]!=nnum){
+                        cout<<0<<endl;
+                        return 0;
+                    }
+                    plus[nv]=nnum;
+                    if(minus[nv]!=INF){
+                        ll x = minus[nv]-plus[nv];
+                        if(x%2==0){
+                            chmax(mi,x/2);
+                            chmin(ma,x/2);
+                        }
+                        else{
+                            cout<<0<<endl;
+                            return 0;
+                        }
+                    }
+                }
+            }
+            if(sign==-1){
+                if(check[nv]==0){
+                    minus[nv]=nnum;
+                    chmin(ma,nnum-1);
+                    check[nv]=1;
+                    q.push({nv,nnum,sign});
+                }
+                else{
+                    if(minus[nv]!=INF && minus[nv]!=nnum){
+                        cout<<0<<endl;
+                        return 0;
+                    }
+                    minus[nv]=nnum;
+                    if(plus[nv]!=-INF){
+                        ll x = minus[nv]-plus[nv];
+                        if(x%2==0){
+                            chmax(mi,x/2);
+                            chmin(ma,x/2);
+                        }
+                        else{
+                            cout<<0<<endl;
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
     }
+    cout<<max(0LL,ma-mi+1)<<endl;
     return 0;
 }
