@@ -3,7 +3,7 @@
     "tasks": [
       {
         "type": "shell",
-        "label": "C/C++: g++ compile file",
+        "label": "C/C++: g++ -O3 compile file",
         "command": "/usr/bin/g++",
         "args": [
           "-std=gnu++17",
