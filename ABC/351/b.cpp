@@ -32,31 +32,23 @@ ll lcm(ll a, ll b){
     return a*b / gcd(a, b);
 }
 
-ll powMod(ll x, ll n,ll mod) {
-    if (n == 0) return 1 % mod;
-    ll val = powMod(x, n / 2,mod);
+ll powMod(ll x, ll n) {
+    if (n == 0) return 1 % MOD;
+    ll val = powMod(x, n / 2);
     val *= val;
-    val %= mod;
+    val %= MOD;
     if (n % 2 == 1) val *= x;
-    return val % mod;
+    return val % MOD;
 }
 
-
 int main() {
-    ll n,m;cin>>n>>m;
-    vector<ll> p(n+1, 1);
-    vector<ll> np(n+1, 1);
-    rep(i, 1, n+1){
-        np[i] = np[i-1]*n%m;
+    ll n;cin>>n;
+    vector<string> a(n),b(n);
+    rep(i,0,n)cin>>a[i];
+    rep(i,0,n)cin>>b[i];
+
+    rep(i,0,n)rep(j,0,n){
+        if(a[i][j]!=b[i][j]) cout<<i+1<<" "<<j+1<<endl;
     }
-    rrep(i,n-1,1){
-        p[i] = p[i+1]*i%m;
-    }
-    ll ans = 0;
-    rep(i, 1, n){
-        ans += ((p[n-i]*(((i+1)*i/2)%m))%m)*np[n-i-1];
-        ans%=m;
-    }
-    cout<<(ans*n)%m<<endl;
     return 0;
 }

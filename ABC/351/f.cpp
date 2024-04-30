@@ -32,31 +32,55 @@ ll lcm(ll a, ll b){
     return a*b / gcd(a, b);
 }
 
-ll powMod(ll x, ll n,ll mod) {
-    if (n == 0) return 1 % mod;
-    ll val = powMod(x, n / 2,mod);
+ll powMod(ll x, ll n) {
+    if (n == 0) return 1 % MOD;
+    ll val = powMod(x, n / 2);
     val *= val;
-    val %= mod;
+    val %= MOD;
     if (n % 2 == 1) val *= x;
-    return val % mod;
+    return val % MOD;
 }
 
+using S = struct 
+{
+    ll num;
+    ll sum;
+};
+
+S op(S x1, S x2) {
+    S res;
+    res.num = x1.num + x2.num;
+    res.sum = x1.sum + x2.sum;
+    return res;
+} 
+bool f(S x){
+    return 1;
+}
+S e() {return {0,0};}
 
 int main() {
-    ll n,m;cin>>n>>m;
-    vector<ll> p(n+1, 1);
-    vector<ll> np(n+1, 1);
-    rep(i, 1, n+1){
-        np[i] = np[i-1]*n%m;
+    ll n;cin>>n;
+    vector<ll> a(n);
+    rep(i,0,n)cin>>a[i];
+    map<ll,ll> mp;
+    rep(i,0,n){
+        mp[a[i]]=1;
     }
-    rrep(i,n-1,1){
-        p[i] = p[i+1]*i%m;
+    unordered_map<ll,ll> mp2;
+    ll cnt = 0;
+    for(auto x:mp){
+        mp2[x.first]=cnt;
+        cnt++;
     }
+    vector<S> v(cnt,{0,0});
+    segtree<S, op, e> seg(v);
     ll ans = 0;
-    rep(i, 1, n){
-        ans += ((p[n-i]*(((i+1)*i/2)%m))%m)*np[n-i-1];
-        ans%=m;
+    rep(i,0,n){
+        ll x = mp2[a[i]];
+        S s = seg.prod(0,x);
+        ans+=s.num*a[i]-s.sum;
+        seg.set(x,{seg.get(x).num+1,seg.get(x).sum+a[i]});
     }
-    cout<<(ans*n)%m<<endl;
+    cout<<ans<<endl;
     return 0;
 }

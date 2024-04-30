@@ -32,31 +32,41 @@ ll lcm(ll a, ll b){
     return a*b / gcd(a, b);
 }
 
-ll powMod(ll x, ll n,ll mod) {
-    if (n == 0) return 1 % mod;
-    ll val = powMod(x, n / 2,mod);
+ll powMod(ll x, ll n) {
+    if (n == 0) return 1 % MOD;
+    ll val = powMod(x, n / 2);
     val *= val;
-    val %= mod;
+    val %= MOD;
     if (n % 2 == 1) val *= x;
-    return val % mod;
+    return val % MOD;
 }
 
+ll calc(ll x){
+    if(x==0) return 1;
+    else if(x%4==1) return 2;
+    else if(x%4==2) return 4;
+    else if(x%4==3) return 8;
+    else return 6;
+}
 
 int main() {
-    ll n,m;cin>>n>>m;
-    vector<ll> p(n+1, 1);
-    vector<ll> np(n+1, 1);
-    rep(i, 1, n+1){
-        np[i] = np[i-1]*n%m;
+    ll t;cin>>t;
+    rep(_,0,t){
+        ll n,m,k;cin>>n>>m>>k;
+        ll diff = m-k;
+        if(diff == 1){
+            if(n>=m-1) cout<<0<<endl;
+            else cout<<calc(n)<<endl;
+            continue;
+        }
+        if(m>n) cout<<calc(n)<<endl;
+        else{
+            n-=m;
+            n%=diff;
+            n+=m;
+            n-=diff;
+            cout<<calc(n)<<endl;
+        }
     }
-    rrep(i,n-1,1){
-        p[i] = p[i+1]*i%m;
-    }
-    ll ans = 0;
-    rep(i, 1, n){
-        ans += ((p[n-i]*(((i+1)*i/2)%m))%m)*np[n-i-1];
-        ans%=m;
-    }
-    cout<<(ans*n)%m<<endl;
     return 0;
 }
