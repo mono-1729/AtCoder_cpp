@@ -1,17 +1,42 @@
 #include <bits/stdc++.h>
+#include <unordered_map>
 #include <stdlib.h>
+#include <boost/multiprecision/cpp_int.hpp>
+using namespace boost::multiprecision;
 using namespace std;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
+//constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+
+ll gcd(ll a, ll b){
+    if(a%b == 0){
+      return b;
+    }else{
+      return gcd(b, a%b);
+    }
+}
+
+ll lcm(ll a, ll b){
+    return a*b / gcd(a, b);
+}
+
+ll powMod(ll x, ll n) {
+    if (n == 0) return 1 % MOD;
+    ll val = powMod(x, n / 2);
+    val *= val;
+    val %= MOD;
+    if (n % 2 == 1) val *= x;
+    return val % MOD;
+}
+
 template <ll MOD> class modint {
 	ll val;
 	static vector<modint<MOD>> factorial_vec;
@@ -108,6 +133,7 @@ public:
 using mint = modint<MOD>;
 template <ll MOD> vector<modint<MOD>> modint<MOD>::factorial_vec;
 
+
 int getrandmax() {
     static uint32_t y = time(NULL);
     y ^= (y << 13); y ^= (y >> 17);
@@ -175,7 +201,7 @@ struct RollingHash {
         if (l) b -= v2[l - 1];
         b *= r2[l];
 
-        return make_pair(a, b);
+        return make_pair(a,b);
     }
     // s[l..r]
 	inline ll llhash(int l, int r) {
@@ -185,43 +211,22 @@ struct RollingHash {
 };
 
 
-
-
-int N;
-string S[201010];
-map<ll, int> cnt[26];
-//---------------------------------------------------------------------------------------------------
 int main() {
-    cin >> N;
-    rep(i, 0, N) cin >> S[i];
-    rep(i, 0, N) reverse(S[i].begin(), S[i].end());
-    sort(S, S + N, [&](string a, string b) { return a.length() < b.length(); });
-
+    ll n;cin>>n;
+    vector<string> s(n);
+    rep(i,0,n)cin>>s[i];
     ll ans = 0;
-    
-    RollingHash rh;
-    rep(i, 0, N) {
-        rh.init(S[i]);
-        int n = S[i].length();
-        
-        int msk = 0;
-        rrep(j, n - 1, 0) {
-            msk |= (1 << (S[i][j] - 'a'));
-            ll hh = rh.llhash(0, j - 1);
-            rep(c, 0, 26) if ((msk & (1 << c)) && cnt[c].count(hh)) {
-                ans += cnt[c][hh];
-            }
+    unordered_map<ll, ll> mp;
+    rep(i,0,n){
+        RollingHash rh;
+        rh.init(s[i]);
+        ll m = s[i].length();
+        rep(j,0,m){
+            ll h = rh.llhash(0,j);
+            ans += mp[h];
+            mp[h]++;
         }
-
-        ll h = rh.llhash(0, n - 2);
-        cnt[S[i][n - 1] - 'a'][h]++;
     }
-
-    cout << ans << endl;
-	return 0;
+    cout<<ans<<endl;
+    return 0;
 }
-
-
-
-
-
