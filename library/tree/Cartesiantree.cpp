@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+#include <unordered_map>
+#include <stdlib.h>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <atcoder/all>
+using namespace atcoder;
+using namespace boost::multiprecision;
+using namespace std;
+
+template <typename T>
+pair<vector<vector<int>>, int> CartesianTree(vector<T> &a) {
+  int N = (int)a.size();
+  vector<vector<int>> g(N);
+  vector<int> p(N, -1), st;
+  st.reserve(N);
+  for (int i = 0; i < N; i++) {
+    int prv = -1;
+    while (!st.empty() && a[i] < a[st.back()]) {
+      prv = st.back();
+      st.pop_back();
+    }
+    if (prv != -1) p[prv] = i;
+    if (!st.empty()) p[i] = st.back();
+    st.push_back(i);
+  }
+  int root = -1;
+  for (int i = 0; i < N; i++) {
+    if (p[i] != -1)
+      g[p[i]].push_back(i);
+    else
+      root = i;
+  }
+  return make_pair(g, root);
+}
