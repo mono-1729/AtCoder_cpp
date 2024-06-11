@@ -88,5 +88,6 @@
         "syncstream": "cpp",
         "strstream": "cpp"
     },
-    "prettier.tabWidth": 4
+    "prettier.tabWidth": 4,
+    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
 }

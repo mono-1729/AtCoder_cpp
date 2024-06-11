@@ -100,6 +100,7 @@ int main() {
                 if(it!=st.begin()){
                     auto it2 = it;
                     pll t2 = *(--it2);
+                    if(t2.first<=x[i] && x[i]<=t2.second) continue;
                     if(x[i] - t2.second <= k){
                         t.first = t2.first;
                         st.erase(t2);
