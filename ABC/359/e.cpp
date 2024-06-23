@@ -1,10 +1,24 @@
-#include<algorithm>
 #include <bits/stdc++.h>
+#include <unordered_map>
 #include <stdlib.h>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <atcoder/all>
+using namespace atcoder;
+using namespace boost::multiprecision;
 using namespace std;
-using ll = long long;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
+constexpr int IINF = 1001001001;
+constexpr ll INF = 1LL<<60;
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+
+using mint = modint998244353;
 
 // Segment Tree Beats
 // - l<=i<r について、 A_i の値を min(A_i, x) に更新
@@ -15,7 +29,7 @@ using ll = long long;
 // - l<=i<r について、 A_i の値に x を加える
 // - l<=i<r について、 A_i の値を x に更新
 
-#define N 200005
+#define N 200003
 
 class SegmentTree {
   const ll inf = 1e18;

@@ -89,5 +89,5 @@
         "strstream": "cpp"
     },
     "prettier.tabWidth": 4,
-    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
+    "C_Cpp.errorSquiggles": "enabled"
 }
