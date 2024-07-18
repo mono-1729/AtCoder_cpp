@@ -42,23 +42,34 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n; cin >> n;
-    vector<vector<ll>> g(n);
-    rep(i,0,n-1){
-        ll a, b; cin >> a >> b;
-        a--; b--;
-        g[a].push_back(b);
-        g[b].push_back(a);
+    ll n, m; cin >> n >> m;
+    vector<ll> a(n);
+    rep(i,0,n) cin >> a[i];
+    vector<vector<pll>> g(n);
+    rep(i,0,m){
+        ll x, y, d; cin >> x >> y >> d;
+        x--; y--;
+        g[x].push_back({y, d});
+        g[y].push_back({x, d});
     }
-    vector<ll> ans;
-    auto dfs = [&](auto dfs, ll v, ll p) -> void {
-        for(auto nv : g[v]){
-            if(nv == p) continue;
-            res += dfs(dfs, nv, v);
+    // sを始点とする各頂点への距離の最小値を格納した配列を返す
+    priority_queue<pll, vector<pll>, greater<pll>> que;
+    vector<ll> dist(n, (1LL<<60));
+    que.push(make_pair(a[0],0));
+    dist[0] = a[0];
+    while(!que.empty()){
+        pll q = que.top(); que.pop();
+        ll d = q.first, u = q.second;
+        if(dist[u] < d) continue;
+        for(auto nq: g[u]){
+            ll v = nq.first, cost = nq.second;
+            if(dist[v] > d+cost+a[nq.first]){
+                dist[v] = d+cost+a[nq.first];
+                que.push({dist[v], v});
+            }
         }
-        ans.push_back(v);
-        return;
-    };
-    
+    }
+    rep(i,1,n) cout << dist[i] << " ";
+    cout << endl;
     return 0;
 }

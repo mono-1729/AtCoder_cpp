@@ -42,23 +42,10 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n; cin >> n;
-    vector<vector<ll>> g(n);
-    rep(i,0,n-1){
-        ll a, b; cin >> a >> b;
-        a--; b--;
-        g[a].push_back(b);
-        g[b].push_back(a);
-    }
-    vector<ll> ans;
-    auto dfs = [&](auto dfs, ll v, ll p) -> void {
-        for(auto nv : g[v]){
-            if(nv == p) continue;
-            res += dfs(dfs, nv, v);
-        }
-        ans.push_back(v);
-        return;
-    };
-    
+    ll r,g,b; cin >> r >> g >> b;
+    string c; cin >> c;
+    if( c == "Red") cout << min(g,b) << endl;
+    if( c == "Green") cout << min(r,b) << endl;
+    if( c == "Blue") cout << min(r,g) << endl;
     return 0;
 }

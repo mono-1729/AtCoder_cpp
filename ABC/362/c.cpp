@@ -43,22 +43,23 @@ ll powMod(ll x, ll n) {
 
 int main() {
     ll n; cin >> n;
-    vector<vector<ll>> g(n);
-    rep(i,0,n-1){
-        ll a, b; cin >> a >> b;
-        a--; b--;
-        g[a].push_back(b);
-        g[b].push_back(a);
+    vector<ll> l(n), r(n);
+    rep(i,0,n) cin >> l[i] >> r[i];
+    ll mi = 0, ma = 0;
+    rep(i,0,n){
+        mi += l[i];
+        ma += r[i];
     }
-    vector<ll> ans;
-    auto dfs = [&](auto dfs, ll v, ll p) -> void {
-        for(auto nv : g[v]){
-            if(nv == p) continue;
-            res += dfs(dfs, nv, v);
+    if(mi > 0 || ma < 0){
+        cout << "No" << endl;
+    }else{
+        cout << "Yes" << endl;
+        ll cnt = -mi;
+        rep(i,0,n){
+            ll num = min(l[i]+cnt, r[i]);
+            cout << num << " ";
+            cnt -= num - l[i];
         }
-        ans.push_back(v);
-        return;
-    };
-    
+    }
     return 0;
 }

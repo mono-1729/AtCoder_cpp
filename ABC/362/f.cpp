@@ -42,23 +42,36 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n; cin >> n;
+    int n; cin >> n;
     vector<vector<ll>> g(n);
     rep(i,0,n-1){
-        ll a, b; cin >> a >> b;
-        a--; b--;
-        g[a].push_back(b);
-        g[b].push_back(a);
+        ll u, v; cin >> u >> v;
+        u--;v--;
+        g[u].push_back(v);
+        g[v].push_back(u);
     }
-    vector<ll> ans;
-    auto dfs = [&](auto dfs, ll v, ll p) -> void {
+    ll idx = -1;
+    auto dfs1 = [&](auto dfs1, ll v, ll p) -> ll {
+        ll res = 1;
         for(auto nv : g[v]){
             if(nv == p) continue;
-            res += dfs(dfs, nv, v);
+            res += dfs1(dfs1, nv, v);
         }
-        ans.push_back(v);
-        return;
+        if(idx == -1 && res > n/2) idx = v;
+        return res;
     };
-    
+    vector<ll> ans;
+
+    auto dfs2 = [&](auto dfs2, ll v, ll p) -> void {
+        for(auto nv : g[v]){
+            if(nv == p) continue;
+            dfs2(dfs2, nv, v);
+        }
+        ans.push_back(v+1);
+    };
+    dfs1(dfs1, 0, -1);
+    dfs2(dfs2, idx, -1);
+    if(n%2 == 1) ans.pop_back();
+    rep(i,0,n/2) cout << ans[i] << " " << ans[n/2+i] << endl;
     return 0;
 }

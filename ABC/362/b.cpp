@@ -42,23 +42,22 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n; cin >> n;
-    vector<vector<ll>> g(n);
-    rep(i,0,n-1){
-        ll a, b; cin >> a >> b;
-        a--; b--;
-        g[a].push_back(b);
-        g[b].push_back(a);
+    ll xa, ya, xb, yb, xc, yc;
+    cin >> xa >> ya >> xb >> yb >> xc >> yc;
+    bool flg = false;
+    if(abs(xa-xb)*abs(xa-xb)+abs(ya-yb)*abs(ya-yb) + abs(xb-xc)*abs(xb-xc)+abs(yb-yc)*abs(yb-yc) == abs(xa-xc)*abs(xa-xc)+abs(ya-yc)*abs(ya-yc) ){
+        flg = true;
     }
-    vector<ll> ans;
-    auto dfs = [&](auto dfs, ll v, ll p) -> void {
-        for(auto nv : g[v]){
-            if(nv == p) continue;
-            res += dfs(dfs, nv, v);
-        }
-        ans.push_back(v);
-        return;
-    };
-    
+    if(abs(xa-xc)*abs(xa-xc)+abs(ya-yc)*abs(ya-yc) + abs(xb-xc)*abs(xb-xc)+abs(yb-yc)*abs(yb-yc) == abs(xa-xb)*abs(xa-xb)+abs(ya-yb)*abs(ya-yb) ){
+        flg = true;
+    }
+    if(abs(xa-xc)*abs(xa-xc)+abs(ya-yc)*abs(ya-yc) + abs(xa-xb)*abs(xa-xb)+abs(ya-yb)*abs(ya-yb) == abs(xb-xc)*abs(xb-xc)+abs(yb-yc)*abs(yb-yc) ){
+        flg = true;
+    }
+    if(flg){
+        cout << "Yes" << endl;
+    }else{
+        cout << "No" << endl;
+    }
     return 0;
 }
