@@ -13,6 +13,8 @@ using namespace std;
 #define pll pair<ll, ll>
 constexpr ll INF = 1LL<<60;
 
+// https://qiita.com/recuraki/items/72e37eb9be9f71bc623a
+
 using S = pll;
 S op1(S x1, S x2){return min(x1,x2); }
 S e1() {return {INF,INF};}
