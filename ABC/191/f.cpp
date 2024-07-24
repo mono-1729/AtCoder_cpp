@@ -20,7 +20,7 @@ template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
 using mint = modint998244353;
 
-ll gcd(ll a, ll b){
+int gcd(int a, int b){
     if(a%b == 0){
       return b;
     }else{
