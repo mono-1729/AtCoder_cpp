@@ -41,62 +41,48 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-using S = tuple<ll,ll,ll>;
-vector<ll> a(200005), b(200005);
-S op(S x1, S x2) {
-    return min(x1, x2);
-} 
-S e() {return {0,0,0};}
-
 int main() {
     ll n, k, t; cin >> n >> k >> t;
-    vector<tuple<ll,ll,ll>> bap(n);
+    vector<ll> a_(n), b_(n), a(n),b(n);
+    vector<pll> ab(n);
+    rep(i,0,n) cin >> a_[i] >> b_[i];
+    rep(i,0,n) ab[i] = {-a_[i]+b_[i],i};
+    sort(ab.begin(), ab.end());
     rep(i,0,n){
-        cin >> a[i] >> b[i];
-        bap[i] = {b[i], a[i], i};        
+        auto [_, id] = ab[i];
+        a[i] = a_[id];
+        b[i] = b_[id];
     }
-    sort(bap.begin(), bap.end());
-    ll sum = 0;
-    ll passcnt = 0;
-    ll cnt = 0;
-    set<tuple<ll, ll, ll>> s;
-    segtree<S, op, e> seg(n);
-    rep(i,0,n) seg.set(i, {0,a[i]-b[i],i});
-    rep(i,0,n){
-        // cout << sum << " " << bp[i].first << " " << t << endl;
-        auto [bb,aa,idx] = bap[i];
-        if(sum + bb <= t){
-            sum += bb;
-            passcnt++;
-            cnt++;
-            s.insert({bb,aa,1});
-            seg.set(idx, {-1,aa - bb,idx});
-        }
-    }
-    while(passcnt > k){
-        if(s.empty()) break;
-        auto [x,dist,idx] = seg.all_prod();
-        if(x == 0) break;
-        seg.set(idx, {0,0,idx});
-        s.erase({b[idx], a[idx], 1});
-        s.insert({a[idx], a[idx], 0});
-        sum += a[idx] - b[idx];
-        passcnt--;
-        while(sum > t){
-            auto [x, idx, y] = *s.rbegin();
-            if(y == 0){
-                sum -= x;
-                cnt--;
-                s.erase(*s.rbegin());
-            }else{
-                sum -= x;
-                seg.set(idx, {0,0,idx});
-                passcnt--;
-                cnt--;
-                s.erase(*s.rbegin());
+    ll l = 0, r = n+1;
+    while(r-l > 1){
+        ll mid = (l+r)/2;
+        ll mini = INF;
+        vector<ll> bsum(n+1,INF), asum(n+1,INF);
+        {
+            ll sum = 0;
+            priority_queue<ll> pq;
+            rep(i,0,n){
+                pq.push(b[i]);
+                sum += b[i];
+                if(pq.size() > min(k,mid)) sum -= pq.top(), pq.pop();
+                if(pq.size() == min(k,mid)) bsum[i] = sum;
             }
         }
+        {
+            ll sum = 0;
+            priority_queue<ll> pq;
+            rrep(i,n-1,0){
+                pq.push(a[i]);
+                sum += a[i];
+                if(pq.size() > mid - min(mid,k)) sum -= pq.top(),pq.pop();
+                if(pq.size() == mid - min(mid,k)) asum[i] = sum;
+            }
+            if(k >= mid) asum[n] = 0;
+        }
+        rep(i,0,n) chmin(mini, bsum[i] + asum[i+1]);
+        if(mini <= t) l = mid;
+        else r = mid;
     }
-    cout << cnt << endl;
+    cout << l << endl;
     return 0;
 }

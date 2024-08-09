@@ -41,6 +41,35 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
+struct st {
+    mint x;
+    stack<pair<ll,mint>> stk;
+    st(){};
+    void add(ll a, mint num){
+        while(stk.size() && stk.top().first >= a){
+            auto [aa, nn] = stk.top(); stk.pop();
+            x -= nn * aa;
+            num += nn;
+        }
+        x += num*a;
+        stk.emplace(a,num);
+    }
+};
+
 int main() {
+    ll n; cin >> n;
+    vector<ll> a(n);
+    rep(i,0,n) cin >> a[i];
+    vector<mint> dp(n+1);
+    dp[0] = 1;
+    st s;
+    rep(i,0,n){
+        s.add(a[i], -dp[i]);
+        dp[i+1] = s.x;
+    }
+    mint ans = dp[n];
+    if(n&1) cout << (-ans).val() << endl;
+    else cout << ans.val() << endl;
+
     return 0;
 }
