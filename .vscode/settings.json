@@ -86,7 +86,8 @@
         "semaphore": "cpp",
         "stop_token": "cpp",
         "syncstream": "cpp",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "all": "cpp"
     },
     "prettier.tabWidth": 4,
     "C_Cpp.errorSquiggles": "enabled"
