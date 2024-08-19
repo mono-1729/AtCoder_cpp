@@ -41,36 +41,35 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-using S = long long;
-
-ll m = (1LL<<61)-1;
-
-S op(S x1, S x2) {
-    return (x1+x2)%m;
-} 
-bool f(S x){
-    return 1;
+vector<int> Z_algorithm(string S) {
+	int c = 0, n = S.size();
+	vector<int> Z(n, 0);
+	for (int i = 1; i < n; i++) {
+		int l = i - c;
+		if (i + Z[l] < c + Z[c]) {
+			Z[i] = Z[l];
+		}
+		else {
+			int j = max(0, c + Z[c] - i);
+			while (i + j < n && S[j] == S[i + j])j++;
+			Z[i] = j;
+			c = i;
+		}
+	}
+	Z[0] = n;
+	return Z;
 }
-S e() {return 0;}
 
 int main() {
-    random_device seed_gen;
-    mt19937_64 engine(seed_gen());
-    ll n, q; cin >> n >> q;
-    vector<ll> a(n), b(n);
-    vector<ll> hash(n);
-    rep(i,0,n) hash[i] = engine()>>3;
-    rep(i,0,n) cin >> a[i], a[i]--;
-    rep(i,0,n) cin >> b[i], b[i]--;
-    segtree<S,op,e> aseg(n), bseg(n);
-    rep(i,0,n){
-        aseg.set(i,hash[a[i]]);
-        bseg.set(i,hash[b[i]]);
-    }
-    rep(i,0,q){
-        ll l1, r1, l2, r2; cin >> l1 >> r1 >> l2 >> r2;
-        if(aseg.prod(l1-1,r1) == bseg.prod(l2-1,r2)) cout << "Yes" << endl;
-        else cout << "No" << endl; 
-    }
+    string s, t; cin >> s >> t;
+    ll n = s.size(), m = t.size();
+    string ts = string(6000000,'a');
+    rep(i,0,3000000) ts[i] = t[i%m], ts[i+3000000] = s[i%n];
+    vector<int> vec = Z_algorithm(ts);
+    ll num1 = 0, num2 = 0;
+    rep(i,3000000,4500000) chmax(num1,vec[i]/m);
+    rep(i,4500000,6000000) chmax(num2,vec[i]/m);
+    if(num1 != num2) cout << -1 << endl;
+    else cout << num1 << endl;
     return 0;
 }

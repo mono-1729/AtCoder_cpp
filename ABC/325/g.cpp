@@ -41,36 +41,24 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-using S = long long;
-
-ll m = (1LL<<61)-1;
-
-S op(S x1, S x2) {
-    return (x1+x2)%m;
-} 
-bool f(S x){
-    return 1;
-}
-S e() {return 0;}
-
 int main() {
-    random_device seed_gen;
-    mt19937_64 engine(seed_gen());
-    ll n, q; cin >> n >> q;
-    vector<ll> a(n), b(n);
-    vector<ll> hash(n);
-    rep(i,0,n) hash[i] = engine()>>3;
-    rep(i,0,n) cin >> a[i], a[i]--;
-    rep(i,0,n) cin >> b[i], b[i]--;
-    segtree<S,op,e> aseg(n), bseg(n);
-    rep(i,0,n){
-        aseg.set(i,hash[a[i]]);
-        bseg.set(i,hash[b[i]]);
-    }
-    rep(i,0,q){
-        ll l1, r1, l2, r2; cin >> l1 >> r1 >> l2 >> r2;
-        if(aseg.prod(l1-1,r1) == bseg.prod(l2-1,r2)) cout << "Yes" << endl;
-        else cout << "No" << endl; 
-    }
+    string s; cin >> s;
+    ll n = s.size();
+    ll k; cin >> k;
+    vector<vector<ll>> dp(n+1,vector<ll>(n+1,INF));
+    auto solve = [&](auto solve, ll l, ll r) -> ll {
+        if(dp[l][r] != INF) return dp[l][r];
+        if(r-l <= 1) return dp[l][r] = r-l;
+        ll res = INF;
+        if(s[l] == 'o'){
+            rep(fid,l+1,r){
+                if(s[fid] == 'f' && solve(solve,fid+1,r) <= k && solve(solve,l+1,fid) == 0) res = 0;
+            }
+        }
+        rep(mid,l+1,r) chmin(res,solve(solve, l, mid) + solve(solve, mid, r));
+        // cout << l << " " << r << " " << res << endl;
+        return dp[l][r] = res;
+    };
+    cout << solve(solve,0,n) << endl;
     return 0;
 }

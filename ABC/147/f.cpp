@@ -41,36 +41,39 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-using S = long long;
-
-ll m = (1LL<<61)-1;
-
-S op(S x1, S x2) {
-    return (x1+x2)%m;
-} 
-bool f(S x){
-    return 1;
-}
-S e() {return 0;}
-
 int main() {
-    random_device seed_gen;
-    mt19937_64 engine(seed_gen());
-    ll n, q; cin >> n >> q;
-    vector<ll> a(n), b(n);
-    vector<ll> hash(n);
-    rep(i,0,n) hash[i] = engine()>>3;
-    rep(i,0,n) cin >> a[i], a[i]--;
-    rep(i,0,n) cin >> b[i], b[i]--;
-    segtree<S,op,e> aseg(n), bseg(n);
-    rep(i,0,n){
-        aseg.set(i,hash[a[i]]);
-        bseg.set(i,hash[b[i]]);
+    ll n, x, d; cin >> n >> x >> d;
+    if(d == 0){
+        if(x != 0) cout << n+1 << endl;
+        else cout << 1 << endl;
+        return 0;
+    }else if(d < 0){
+        x = x + d*(n-1);
+        d = -d;
     }
-    rep(i,0,q){
-        ll l1, r1, l2, r2; cin >> l1 >> r1 >> l2 >> r2;
-        if(aseg.prod(l1-1,r1) == bseg.prod(l2-1,r2)) cout << "Yes" << endl;
-        else cout << "No" << endl; 
+    vector<ll> sum(n+1);
+    rep(i,0,n) sum[i+1] = sum[i] + x + i*d;
+    unordered_map<ll,multiset<pll>> mp;
+    rep(i,0,n+1){
+        ll mini = sum[i];
+        ll maxi = (sum[n]-sum[n-i]);
+        ll mod = mini % d; if(mod < 0) mod += d;
+        ll l = mini/d; if(mini%d < 0) l--;
+        ll r = maxi/d + 1; if(maxi%d < 0) r--;
+        mp[mod].insert({l,0});
+        mp[mod].insert({r,1});
     }
+    ll ans = 0;
+    for(auto [mod,st]: mp){
+        ll cnt = 0;
+        ll pre = 0;
+        for(auto [idx,type] :st){
+            if(cnt > 0) ans += idx-pre;
+            if(type == 0) cnt++;
+            else cnt--;
+            pre = idx;
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

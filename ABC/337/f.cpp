@@ -41,36 +41,29 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-using S = long long;
-
-ll m = (1LL<<61)-1;
-
-S op(S x1, S x2) {
-    return (x1+x2)%m;
-} 
-bool f(S x){
-    return 1;
-}
-S e() {return 0;}
-
 int main() {
-    random_device seed_gen;
-    mt19937_64 engine(seed_gen());
-    ll n, q; cin >> n >> q;
-    vector<ll> a(n), b(n);
-    vector<ll> hash(n);
-    rep(i,0,n) hash[i] = engine()>>3;
-    rep(i,0,n) cin >> a[i], a[i]--;
-    rep(i,0,n) cin >> b[i], b[i]--;
-    segtree<S,op,e> aseg(n), bseg(n);
-    rep(i,0,n){
-        aseg.set(i,hash[a[i]]);
-        bseg.set(i,hash[b[i]]);
-    }
-    rep(i,0,q){
-        ll l1, r1, l2, r2; cin >> l1 >> r1 >> l2 >> r2;
-        if(aseg.prod(l1-1,r1) == bseg.prod(l2-1,r2)) cout << "Yes" << endl;
-        else cout << "No" << endl; 
+    ll n, m, k; cin >> n >> m >> k;
+    vector<ll> c(n*2);
+    rep(i,0,n) cin >> c[i], c[i]--, c[n+i] = c[i];
+    vector<ll> colnum(n,0), colsum(n,0), boxcnt(n,0), coluse(n,0);
+    rep(i,0,n) colsum[c[i]]++;
+    ll boxsum = 0, use = 0, r = 0;
+    rep(l,0,n){
+        auto add = [&](ll color, ll num) -> void {
+            use -= coluse[color];
+            boxsum -= boxcnt[color];
+            colnum[color] += num;
+            boxcnt[color] = (colnum[color]+k-1)/k;
+            coluse[color] = min(colsum[color], boxcnt[color]*k);
+            boxsum += boxcnt[color];
+            use += coluse[color];
+        };
+        while(r < n+l && boxsum < m){
+            add(c[r], 1);
+            r++;
+        }
+        cout << use << endl;
+        add(c[l], -1);
     }
     return 0;
 }
