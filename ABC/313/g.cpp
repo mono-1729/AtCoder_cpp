@@ -42,5 +42,24 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
+    ll n; cin >> n;
+    vector<ll> a(n);
+    rep(i,0,n) cin >> a[i];
+    sort(a.begin(), a.end());
+    mint ans = 0;
+    ll minus = 0;
+    ll total = 0;
+    {
+        ans += a[0]+1;
+        minus += a[0];
+        total += a[0] * n;
+    }
+    rep(i,0,n){
+        if(a[i] == minus) continue;
+        ans += floor_sum((a[i]-minus),n,(n-i),total+n-i+n);
+        total += (a[i]-minus) * (n-i);
+        minus = a[i];
+    }
+    cout << ans.val() << endl;
     return 0;
 }
