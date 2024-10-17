@@ -41,20 +41,42 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
+int max_num=100005;
+vector<ll> phi(max_num);
+vector<mint> dp(max_num);
+vector<vector<ll>> divs(max_num);
+
+void init_e(){
+    rep(i, 1, max_num){
+        for(ll j = i; j < max_num; j += i){
+            divs[j].push_back(i);
+        }
+    }
+	rep(i,0,max_num) phi[i] = i;
+    rep(i,2,max_num) {
+        if(phi[i] == i) {
+            for(ll j = i; j < max_num; j += i) {
+                phi[j] = phi[j] / i * (i - 1);
+            }
+        }
+    }
+}
+
 int main() {
-    ll n, m; cin >> n >> m;
-    mint x = 0;
-    ll plus = 1;
-    rep(i,0,m){
-        x += plus;
-        plus += 2;
-    }
+    init_e();
+    ll n; cin >> n;
+    vector<ll> a(n);
+    vector<mint> pow2(n+1, 1);
+    rep(i,0,n) pow2[i+1] = pow2[i] * 2;
+    rep(i,0,n) cin >> a[i];
     mint ans = 0;
-    // cout << x.val() << endl;
     rep(i,0,n){
-        ans += (2 * x * n)/(n-i);
+        ans *= 2;
+        for(auto x: divs[a[i]]){
+            ans += dp[x];
+            dp[x] += pow2[i] * phi[x];
+        }
+        cout << ans.val() << endl;
     }
-    ans -= x;
-    cout << ans.val() << endl;
     return 0;
 }
