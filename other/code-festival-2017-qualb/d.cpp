@@ -53,19 +53,31 @@ int main() {
         vec.push_back({x-'0', idx-l});
     }
     ll m = vec.size();
-    vector<vector<ll>> dp(m+1, vector<ll>(9,-INF));
-    dp[0][8] = 0;
-    rep(i,0,m)rep(j,0,9){
+    vector<vector<ll>> dp(m+1, vector<ll>(16,-INF));
+    dp[0][15] = 0;
+    rep(i,0,m)rep(j,0,16){
         if(dp[i][j] == -INF) continue;
-        ll l2 = j/3, l1 = j%3;
-        chmax(dp[i+1][j/3], dp[i][j]);
-        if((l2 == 0 || (l2 == 1 && vec[i-2].second > 1)) && l1 == 0 && vec[i-2].first == 1 && vec[i-1].second == 1){
-            chmax(dp[i+1][7], dp[i][j]+vec[i-2].second-l2);
-            chmax(dp[i+1][8], dp[i][j]+vec[i].second);
+        ll l1 = j/4, l2 = j%4;
+        chmax(dp[i+1][j/4], dp[i][j]);
+        if(vec[i].first == 0 || l1 != 0 || vec[i-1].second != 1) continue;
+        if(l2 == 0){
+            chmax(dp[i+1][15], dp[i][j] + vec[i].second);
+            chmax(dp[i+1][7], dp[i][j] + vec[i-2].second);
+            if(vec[i].second > 1) chmax(dp[i+1][11], dp[i][j] + vec[i].second-1);
+        }
+        if(l2 == 1 && vec[i-2].second > 1){
+            chmax(dp[i+1][15], dp[i][j] + vec[i].second);
+            chmax(dp[i+1][7], dp[i][j] + vec[i-2].second-1);
+            if(vec[i].second > 1) chmax(dp[i+1][11], dp[i][j] + vec[i].second-1);
+        }
+        if(l2 == 2 && vec[i-2].second > 1){
+            chmax(dp[i+1][15], dp[i][j] + vec[i].second);
+            chmax(dp[i+1][7], dp[i][j] + 1);
+            if(vec[i].second > 1) chmax(dp[i+1][11], dp[i][j] + vec[i].second-1);
         }
     }
     ll ans = 0;
-    rep(i,0,8) chmax(ans, dp[m][i]);
+    rep(i,0,16) chmax(ans, dp[m][i]);
     cout << ans << endl;
     return 0;
 }

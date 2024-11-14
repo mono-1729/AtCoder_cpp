@@ -42,7 +42,39 @@ ll powMod(ll x, ll n) {
 }
 
 struct boxset {
-    
+    multiset<pll> minst, otherst;
+    ll border;
+    ll cost = 0;
+    void insert(pll p){
+        auto [x,y] = p;
+        if(minst.size() < border){
+            minst.insert({y,x});
+            cost += y-1;
+        }else if(border > 0 && minst.rbegin()->first > y){
+            auto ep = *minst.rbegin();
+            minst.erase(minst.find(ep));
+            minst.insert({y,x});
+            otherst.insert(ep);
+            cost += y-ep.first;
+        }else{
+            otherst.insert({y,x});
+        }
+    }
+    bool erase(pll p){
+        auto [x,y] = p;
+        if(otherst.count({y,x})) otherst.erase(otherst.find({y,x}));
+        else{
+            minst.erase(minst.find({y,x}));
+            cost -= y-1;
+            if(!otherst.empty()){
+                auto ep = *otherst.begin();
+                otherst.erase(otherst.begin());
+                minst.insert(ep);
+                cost += ep.first-1;
+            }else return true;
+        }
+        return minst.size() != border;
+    }
 };
 
 int main() {
@@ -50,10 +82,22 @@ int main() {
     while(t--){
         ll n, m; cin >> n >> m;
         vector<ll> v(n), p(n);
+        vector<pll> vp(n);
         rep(i,0,n){
             cin >> v[i] >> p[i];
-
+            vp[i] = {v[i], p[i]};
         }
+        sort(vp.begin(), vp.end());
+        boxset bs;
+        bs.border = m-1;
+        rep(i,0,n) bs.insert(vp[i]);
+        ll ans = 0, num = 0;
+        rep(i,0,n){
+            if(bs.erase(vp[i])) break;
+            num += max(0LL, vp[i].first-vp[i].second);
+            chmax(ans, num-bs.cost);
+        }
+        cout << ans << endl;
     }
     return 0;
 }
