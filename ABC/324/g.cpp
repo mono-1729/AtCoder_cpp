@@ -98,18 +98,39 @@ int main() {
     vector<ll> a(n);
     rep(i,0,n) cin >> a[i];
     ll q; cin >> q;
-    vector<ll> l(q+1), r(q+1), u(q+1), d(q+1);
-    l[0] = 0, r[0] = n, u[0] = n, d[0] = 0;
+    vector<ll> l(q+1,0), r(q+1,0), u(q+1,0), d(q+1,0);
+    l[0] = 0, r[0] = n, u[0] = n+1, d[0] = 1;
     merge_sort_tree mst(a);
-    rep(i,0,n){
+    rep(i,1,q+1){
         ll t, s, x; cin >> t >> s >> x;
         if(t == 1){
-
+            ll cnt = mst.cntMoreeq(l[s], r[s], d[s])+mst.cntLess(l[s], r[s], u[s])-(r[s]-l[s]);
+            if(cnt <= x){
+                cout << 0 << endl;
+                continue;
+            }
+            ll ngr = l[s]-1, okr = r[s];
+            while(okr-ngr > 1){
+                ll mid = (okr+ngr)/2;
+                if(mst.cntMoreeq(l[s],mid,d[s]) + mst.cntLess(l[s],mid,u[s])-(mid-l[s])<x)ngr = mid;
+                else okr = mid;
+            }
+            l[i] = okr;
+            r[i] = r[s];
+            u[i] = u[s];
+            d[i] = d[s];
+            r[s] = okr;
+            cout << cnt-x << endl;
         }
         if(t == 2){
-            
+            l[i] = l[s];
+            r[i] = r[s];
+            d[i] = max(d[s],min(u[s], x+1));
+            u[i] = u[s];
+            u[s] = d[i];
+            int res = mst.cntMoreeq(l[i],r[i],d[i])+mst.cntLess(l[i],r[i],u[i])-(r[i]-l[i]);
+            cout << res << endl;
         }
     }
-
     return 0;
 }
