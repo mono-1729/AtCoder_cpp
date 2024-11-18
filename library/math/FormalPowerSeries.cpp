@@ -16,173 +16,62 @@ constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
-template<class T>
-struct FormalPowerSeries : vector<T> {
-  using vector<T>::vector;
-  using vector<T>::operator=;
-  using F = FormalPowerSeries;
-
-  F operator-() const {
-    F res(*this);
-    for (auto &e : res) e = -e;
-    return res;
-  }
-  F &operator*=(const T &g) {
-    for (auto &e : *this) e *= g;
-    return *this;
-  }
-  F &operator/=(const T &g) {
-    assert(g != T(0));
-    *this *= g.inv();
-    return *this;
-  }
-  F &operator+=(const F &g) {
-    int n = (*this).size(), m = g.size();
-    rep(i,0, min(n, m)) (*this)[i] += g[i];
-    return *this;
-  }
-  F &operator-=(const F &g) {
-    int n = (*this).size(), m = g.size();
-    rep(i,0, min(n, m)) (*this)[i] -= g[i];
-    return *this;
-  }
-  F &operator<<=(const int d) {
-    int n = (*this).size();
-    (*this).insert((*this).begin(), d, 0);
-    (*this).resize(n);
-    return *this;
-  }
-  F &operator>>=(const int d) {
-    int n = (*this).size();
-    (*this).erase((*this).begin(), (*this).begin() + min(n, d));
-    (*this).resize(n);
-    return *this;
-  }
-  F inv(int d = -1) const {
-    int n = (*this).size();
-    assert(n != 0 && (*this)[0] != 0);
-    if (d == -1) d = n;
-    assert(d > 0);
-    F res{(*this)[0].inv()};
-    while (res.size() < d) {
-      int m = size(res);
-      F f(begin(*this), begin(*this) + min(n, 2*m));
-      F r(res);
-      f.resize(2*m), internal::butterfly(f);
-      r.resize(2*m), internal::butterfly(r);
-      rep(i,0,2*m) f[i] *= r[i];
-      internal::butterfly_inv(f);
-      f.erase(f.begin(), f.begin() + m);
-      f.resize(2*m), internal::butterfly(f);
-      rep(i,0,2*m) f[i] *= r[i];
-      internal::butterfly_inv(f);
-      T iz = T(2*m).inv(); iz *= -iz;
-      rep(i,0,m) f[i] *= iz;
-      res.insert(res.end(), f.begin(), f.begin() + m);
-    }
-    return {res.begin(), res.begin() + d};
-  }
-
-  // // fast: FMT-friendly modulus only
-  // F &operator*=(const F &g) {
-  //   int n = (*this).size();
-  //   *this = convolution(*this, g);
-  //   (*this).resize(n);
-  //   return *this;
-  // }
-  // F &operator/=(const F &g) {
-  //   int n = (*this).size();
-  //   *this = convolution(*this, g.inv(n));
-  //   (*this).resize(n);
-  //   return *this;
-  // }
-
-  // // naive
-  // F &operator*=(const F &g) {
-  //   int n = (*this).size(), m = g.size();
-  //   drep(i, n) {
-  //     (*this)[i] *= g[0];
-  //     rep2(j, 1, min(i+1, m)) (*this)[i] += (*this)[i-j] * g[j];
-  //   }
-  //   return *this;
-  // }
-  // F &operator/=(const F &g) {
-  //   assert(g[0] != T(0));
-  //   T ig0 = g[0].inv();
-  //   int n = (*this).size(), m = g.size();
-  //   rep(i, n) {
-  //     rep2(j, 1, min(i+1, m)) (*this)[i] -= (*this)[i-j] * g[j];
-  //     (*this)[i] *= ig0;
-  //   }
-  //   return *this;
-  // }
-
-  // sparse
-  F &operator*=(vector<pair<int, T>> g) {
-    int n = (*this).size();
-    auto [d, c] = g.front();
-    if (d == 0) g.erase(g.begin());
-    else c = 0;
-    drep(i, n) {
-      (*this)[i] *= c;
-      for (auto &[j, b] : g) {
-        if (j > i) break;
-        (*this)[i] += (*this)[i-j] * b;
-      }
-    }
-    return *this;
-  }
-  F &operator/=(vector<pair<int, T>> g) {
-    int n = (*this).size();
-    auto [d, c] = g.front();
-    assert(d == 0 && c != T(0));
-    T ic = c.inv();
-    g.erase(g.begin());
-    rep(i,0,n) {
-      for (auto &[j, b] : g) {
-        if (j > i) break;
-        (*this)[i] -= (*this)[i-j] * b;
-      }
-      (*this)[i] *= ic;
-    }
-    return *this;
-  }
-
-  // multiply and divide (1 + cz^d)
-  void multiply(const int d, const T c) { 
-    int n = (*this).size();
-    if (c == T(1)) drep(i, n-d) (*this)[i+d] += (*this)[i];
-    else if (c == T(-1)) drep(i, n-d) (*this)[i+d] -= (*this)[i];
-    else drep(i, n-d) (*this)[i+d] += (*this)[i] * c;
-  }
-  void divide(const int d, const T c) {
-    int n = (*this).size();
-    if (c == T(1)) rep(i,0,n-d) (*this)[i+d] -= (*this)[i];
-    else if (c == T(-1)) rep(i,0,n-d) (*this)[i+d] += (*this)[i];
-    else rep(i,0,n-d) (*this)[i+d] -= (*this)[i] * c;
-  }
-
-  T eval(const T &a) const {
-    T x(1), res(0);
-    for (auto e : *this) res += e * x, x *= a;
-    return res;
-  }
-
-  F operator*(const T &g) const { return F(*this) *= g; }
-  F operator/(const T &g) const { return F(*this) /= g; }
-  F operator+(const F &g) const { return F(*this) += g; }
-  F operator-(const F &g) const { return F(*this) -= g; }
-  F operator<<(const int d) const { return F(*this) <<= d; }
-  F operator>>(const int d) const { return F(*this) >>= d; }
-  F operator*(const F &g) const { return F(*this) *= g; }
-  F operator/(const F &g) const { return F(*this) /= g; }
-  F operator*(vector<pair<int, T>> g) const { return F(*this) *= g; }
-  F operator/(vector<pair<int, T>> g) const { return F(*this) /= g; }
-};
-
 using mint = modint998244353;
-using fps = FormalPowerSeries<mint>;
-using sfps = vector<pair<int, mint>>;
+
+// Formal Power Series
+using vm = vector<mint>;
+struct fps : vm {
+#define d (*this)
+#define s int(vm::size())
+  template<class...Args> fps(Args...args): vm(args...) {}
+  fps(initializer_list<mint> a): vm(a.begin(),a.end()) {}
+  void rsz(int n) { if (s < n) resize(n);}
+  fps& low_(int n) { resize(n); return d;}
+  fps low(int n) const { return fps(d).low_(n);}
+  mint& operator[](int i) { rsz(i+1); return vm::operator[](i);}
+  mint operator[](int i) const { return i<s ? vm::operator[](i) : 0;}
+  mint operator()(mint x) const {
+    mint r;
+    for (int i = s-1; i >= 0; --i) r = r*x+d[i];
+    return r;
+  }
+  fps operator-() const { fps r(d); rep(i,0,s) r[i] = -r[i]; return r;}
+  fps& operator+=(const fps& a) { rsz(a.size()); rep(i,0,a.size()) d[i] += a[i]; return d;}
+  fps& operator-=(const fps& a) { rsz(a.size()); rep(i,0,a.size()) d[i] -= a[i]; return d;}
+  fps& operator*=(const fps& a) { return d = convolution(d, a);}
+  fps& operator*=(mint a) { rep(i,0,s) d[i] *= a; return d;}
+  fps& operator/=(mint a) { rep(i,0,s) d[i] /= a; return d;}
+  fps operator+(const fps& a) const { return fps(d) += a;}
+  fps operator-(const fps& a) const { return fps(d) -= a;}
+  fps operator*(const fps& a) const { return fps(d) *= a;}
+  fps operator*(mint a) const { return fps(d) *= a;}
+  fps operator/(mint a) const { return fps(d) /= a;}
+  fps operator~() const {
+    fps r({d[0].inv()});
+    for (int i = 1; i < s; i <<= 1) r = r*mint(2) - (r*r*low(i<<1)).low(i<<1);
+    return r.low_(s);
+  }
+  fps& operator/=(const fps& a) { int w = s; d *= ~a; return d.low_(w);}
+  fps operator/(const fps& a) const { return fps(d) /= a;}
+  fps integ() const {
+    fps r;
+    rep(i,0,s) r[i+1] = d[i]/(i+1);
+    return r;
+  }
+  fps pow(int t) {
+    if (t == 1) return *this;
+    fps r = pow(t>>1);
+    (r *= r).low_(s);
+    if (t&1) (r *= *this).low_(s);
+    return r;
+  }
+#undef s
+#undef d
+};
+ostream& operator<<(ostream&o,const fps&a) {
+  rep(i,0,a.size()) o<<(i?" ":"")<<a[i].val();
+  return o;
+}
 
 int main() {
     return 0;
