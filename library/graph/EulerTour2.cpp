@@ -13,100 +13,106 @@ using namespace std;
 #define pll pair<ll, ll>
 constexpr ll INF = 1LL<<60;
 
-template< typename T >
-struct SparseTable {
-  vector< vector< T > > st;
-  vector< int > lookup;
+// https://qiita.com/recuraki/items/72e37eb9be9f71bc623a
 
-  SparseTable() {};
-
-  SparseTable(const vector< T > &v) {
-    int b = 0;
-    while((1 << b) <= v.size()) ++b;
-    st.assign(b, vector< T >(1 << b));
-    for(int i = 0; i < v.size(); i++) {
-      st[0][i] = v[i];
-    }
-    for(int i = 1; i < b; i++) {
-      for(int j = 0; j + (1 << i) <= (1 << b); j++) {
-        st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
-      }
-    }
-    lookup.resize(v.size() + 1);
-    for(int i = 2; i < lookup.size(); i++) {
-      lookup[i] = lookup[i >> 1] + 1;
-    }
-  }
-
-  void init(const vector< T > &v) {
-    int b = 0;
-    while((1 << b) <= v.size()) ++b;
-    st.assign(b, vector< T >(1 << b));
-    for(int i = 0; i < v.size(); i++) {
-      st[0][i] = v[i];
-    }
-    for(int i = 1; i < b; i++) {
-      for(int j = 0; j + (1 << i) <= (1 << b); j++) {
-        st[i][j] = min(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
-      }
-    }
-    lookup.resize(v.size() + 1);
-    for(int i = 2; i < lookup.size(); i++) {
-      lookup[i] = lookup[i >> 1] + 1;
-    }
-  }
-
-  inline T rmq(int l, int r) {
-    int b = lookup[r - l];
-    return min(st[b][l], st[b][r - (1 << b)]);
-  }
-};
-
+using S = pll;
+S op1(S x1, S x2){return min(x1,x2); }
+S e1() {return {INF,INF};}
+using T = ll;
+T op2(T x1, T x2){return x1+x2;}
+T e2() {return 0;}
 
 struct EulerTour {
     int n;
     int cnt;
-    vector<vector<ll>> g;
+    vector<vector<pll>> g;
+    vector<ll> vcost;
     vector<ll> in,out;
     vector<pll> depth_; 
-    SparseTable<pll> depth;
+    segtree<S,op1,e1> depth;
+    vector<ll> vcost1_,vcost2_,ecost1_,ecost2_;
+    segtree<T,op2,e2> vcost1,vcost2,ecost1,ecost2;
 
-    EulerTour(vector<vector<ll>> &G){
+    EulerTour(vector<vector<pll>> &G, vector<ll> vcost_){
         g=G;
         n=g.size();
+        vcost=vcost_;
         in.assign(n,-1);out.assign(n,-1);
         cnt = 0;
-        dfs(0,-1,0);
+        dfs(0,-1,0,0);
+        vcost1_.push_back(0);
+        vcost2_.push_back(-vcost[0]);
+        ecost1_.push_back(0);
+        ecost2_.push_back(0);
         depth_.push_back({0,0});
-        depth=SparseTable<pll>(depth_);
+        depth=segtree<S,op1,e1>(depth_);
+        vcost1=segtree<T,op2,e2>(vcost1_);
+        vcost2=segtree<T,op2,e2>(vcost2_);
+        ecost1=segtree<T,op2,e2>(ecost1_);
+        ecost2=segtree<T,op2,e2>(ecost2_);
     }
 
-    void dfs(ll v, ll p,ll d){
-        in[v]=depth_.size();
+    void dfs(ll v, ll p,ll d, ll ecost){
+        in[v]=vcost1_.size();
+        vcost1_.push_back(vcost[v]);
+        vcost2_.push_back(vcost[v]);
+        ecost1_.push_back(ecost);
+        ecost2_.push_back(ecost);
         depth_.push_back({d,v});
-        for(auto to:g[v]){
+        for(auto [to,cost]:g[v]){
             if(to==p)continue;
-            dfs(to,v,d+1);
+            dfs(to,v,d+1,cost);
+            vcost1_.push_back(0);
+            vcost2_.push_back(-vcost[to]);
+            ecost1_.push_back(0);
+            ecost2_.push_back(-cost);
             depth_.push_back({d,v});
         }
-        out[v]=depth_.size();
+        out[v]=vcost1_.size();
     }
 
     ll lca(ll u,ll v){
         ll l = min(in[u],in[v]), r = max(out[u],out[v]);
-        return depth.rmq(l,r).second;
+        return depth.prod(l,r).second;
+    }
+
+    ll subTreeVCost(ll u){
+        return vcost1.prod(in[u],out[u]);
+    }
+
+    ll subTreeECost(ll u){
+        return ecost1.prod(in[u]+1,out[u]);
+    }
+
+    ll rootPassVCost(ll u){
+        return vcost2.prod(0,in[u]+1);
+    }
+
+    ll rootPassECost(ll u){
+        return ecost2.prod(1,in[u]+1);
+    }
+
+    ll pathVCost(ll u, ll v){
+        ll a = lca(u,v);
+        return rootPassVCost(u)+rootPassVCost(v)-rootPassVCost(a)*2;
+    }
+
+    ll pathECost(ll u, ll v){
+        ll a = lca(u,v);
+        return rootPassECost(u)+rootPassECost(v)-rootPassECost(a)*2;
     }
 };
 
 int main() {
     ll n = 6;
-    vector<vector<ll>> g(n);
+    vector<vector<pll>> g(n);
+    vector<ll> vcost = {1,2,3,4,5,6};
     vector<pll> uv = {{0,1},{1,2},{2,3},{1,4},{0,5}};
     for(auto [u,v]:uv){
-        g[u].push_back(v);
-        g[v].push_back(u);
+        g[u].push_back({v,1});
+        g[v].push_back({u,1});
     }
-    EulerTour et(g);
+    EulerTour et(g,vcost);
     cout<<et.lca(1,4)<<endl;
     return 0;
 }
