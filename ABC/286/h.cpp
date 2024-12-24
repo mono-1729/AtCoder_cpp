@@ -18,8 +18,6 @@ constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
-using mint = modint998244353;
-
 ll gcd(ll a, ll b){
     if(a%b == 0){
       return b;
@@ -41,71 +39,141 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-struct Pos {
-  ll x, y;
-  Pos() {}
-  Pos(ll x, ll y) : x(x), y(y) {}
-  bool operator< (const Pos& other) const {
-    return (x == other.x ? y < other.y : x < other.x);
-  }
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+struct Point
+{
+    double x = 0;
+    double y = 0;
+
+    void rot(double angle)
+    {
+        double new_x = x * cos(angle) - y * sin(angle);
+        double new_y = x * sin(angle) + y * cos(angle);
+        x = new_x;
+        y = new_y;
+    }
+
+    void rot(int degree)
+    {
+        double pi = atan(1) * 4;
+        double angle = double(degree) / 180 * pi;
+        rot(angle);
+    }
+
+    double norm()
+    {
+        return sqrt(x * x + y * y);
+    }
+
+    double arg()
+    {
+        return atan2(y, x);
+    }
+
+    double operator*(Point &other)
+    {
+        return x * other.x + y * other.y;
+    }
+
+    double operator^(Point &other)
+    {
+        return x * other.y - y * other.x;
+    }
+
+    Point operator+(Point &other)
+    {
+        Point ans;
+        ans.x = x + other.x;
+        ans.y = y + other.y;
+        return ans;
+    }
+
+    Point operator-(Point &other)
+    {
+        Point ans;
+        ans.x = x - other.x;
+        ans.y = y - other.y;
+        return ans;
+    }
+
+    int ccw(Point B, Point C)
+    {
+        Point A = *this;
+        Point AB = B - A;
+        Point AC = C - A;
+        double cross = AB ^ AC;
+        if (cross > 0)
+        {
+            return 1;
+        }
+        else if (cross == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+        return true;
+    }
+    bool touch(Point A, Point B, Point C, Point D)
+    {
+        int f1 = ccw(B,C)*ccw(B,D);
+        int f2 = B.ccw(A,C)*B.ccw(A,D);
+        return (!f1 || !f2 || (f1 < 0 && f2 < 0));
+    }
 };
- 
-inline ll cross(Pos &a, Pos &b, Pos &c) {
-  return (((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x)));
-}
- 
-void convex_hull(vector<Pos> &ps, vector<Pos> &qs) {
-  sort(ps.begin(), ps.end());
-  qs.clear();
-  qs.reserve(ps.size());
-  int n = ps.size();
-  for(auto p : ps) {
-    // 外積判定の等号なし => 凸包の直線上にある点も含む
-    while(qs.size() > 1 && cross(qs[qs.size()-2], qs[qs.size()-1], p) > 0) {
-      qs.pop_back();
-    }
-    qs.push_back(p);
-  }
-  int t = qs.size();
- 
-  for(int i = n-2; i >= 0; --i) {
-    Pos &p = ps[i];
-    while(qs.size() > t && cross(qs[qs.size()-2], qs[qs.size()-1], p) > 0) {
-      qs.pop_back();
-    }
-    qs.push_back(p);
-  }
-  qs.pop_back();
-}
 
 int main() {
     cout << fixed << setprecision(15);
     ll n; cin >> n;
-    vector<Pos> ps(n+2), qs;
-    rep(i, 0, n) cin >> ps[i].x >> ps[i].y;
-    ll sx, sy, tx, ty; cin >> sx >> sy >> tx >> ty;
-    if(sx == tx && sy == ty){
-        cout << 0 << endl;
-        return 0;
-    }
-    bool flg_ = true;
-    ps[n] = {sx, sy}, ps[n+1] = {tx, ty};
+    vector<Point> points(n);
     rep(i, 0, n){
-        if(cross(ps[i], ps[(i+1)%n], ps[n]) * cross(ps[i], ps[(i+1)%n], ps[n+1]) < 0) flg_ = false;
+        cin >> points[i].x >> points[i].y;
     }
-    if(flg_){
-        cout << sqrt((double)(sx-tx)*(sx-tx) + (sy-ty)*(sy-ty)) << endl;
+    Point s, t;
+    cin >> s.x >> s.y >> t.x >> t.y;
+    bool flg = true;
+    rep(i,0,n) if(s.touch(s,t,points[i],points[(i+1)%n])) flg = false;
+    if(flg){
+        cout << (s-t).norm() << endl;
+        cout << "a" << endl;
         return 0;
     }
-    convex_hull(ps, qs);
-    double ans1 = 0, ans2 = 0;
-    int flg = 0;
-    rep(i,0,qs.size()){
-        if((qs[i].x == sx && qs[i].y == sy) || (qs[i].x == tx && qs[i].y == ty)) flg = 1-flg;
-        double dist = sqrt((double)(qs[i].x-qs[(i+1)%qs.size()].x)*(qs[i].x-qs[(i+1)%qs.size()].x) + (qs[i].y-qs[(i+1)%qs.size()].y)*(qs[i].y-qs[(i+1)%qs.size()].y));
-        if(flg == 0) ans1 += dist;
-        else ans2 += dist;
+    points.push_back(s);
+    points.push_back(t);
+    ll n2 = n + 2;
+    ll sv = n, tv = n + 1;
+    vector<vector<pair<ll,double>>> g(n2);
+    auto add = [&](ll a, ll b, double c){
+        g[a].push_back({b, c});
+        g[b].push_back({a, c});
+    };
+    auto addsp = [&](int v){
+        rep(i,0,n){
+            if(points[v].ccw(points[i], points[(i-1+n)%n]) * points[v].ccw(points[(i+1)%n], points[i]) >= 0){
+                add(v,i,(points[v]-points[i]).norm());
+            }
+        }
+    };
+    addsp(sv); addsp(tv);
+    rep(i,0,n) add(i,(i+1)%n,(points[i]-points[(i+1)%n]).norm());
+    vector<double> dist(n2,INF);
+    priority_queue<pair<double,int>,vector<pair<double,int>>,greater<pair<double,int>>> pq;
+    pq.push({0,sv}); dist[sv] = 0;
+    while(pq.size()){
+        auto [d,v] = pq.top(); pq.pop();
+        if(dist[v] < d) continue;
+        for(auto [to,c]:g[v]){
+            if(dist[to] > dist[v] + c){
+                dist[to] = dist[v] + c;
+                pq.push({dist[to],to});
+            }
+        }
     }
-    cout << min(ans1, ans2) << endl;
+    cout << dist[tv] << endl;
     return 0;
 }
