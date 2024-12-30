@@ -97,69 +97,61 @@ public:
     }
 };
 
-using S = long long;
-S op(S x1, S x2) {
-    return max(x1, x2);
-} 
-S e() {return 0;}
-
 int main() {
-    ll n, x; cin >> n >> x;
-    x--;
-    vector<ll> a(n), b(n), p(n), q(n);
-    UnionFind uf1(n), uf2(n);
-    ll asum = 0, bsum = 0;
-    rep(i,0,n) cin >> a[i], asum += a[i];
-    rep(i,0,n) cin >> b[i], bsum += b[i];
-    rep(i,0,n) cin >> p[i], p[i]--, uf1.unite(i, p[i]);
-    rep(i,0,n) cin >> q[i], q[i]--, uf2.unite(i, q[i]);
-
-    {
-        vector<ll> pp(n), qq(n);
-        rep(i,0,n) pp[p[i]] = i;
-        rep(i,0,n) qq[q[i]] = i;
-        rep(i,0,n) p[i] = pp[i], q[i] = qq[i];
+    ll n, m; cin >> n >> m;
+    UnionFind uf(n*2);
+    vector<tuple<ll,ll,ll>> query;
+    rep(i,0,m){
+        ll a, b, c; cin >> a >> b >> c;
+        a--; b--;
+        query.push_back({a,b,c});
     }
-    
-    bool ok = true;
-    rep(i,0,n){
-        if(a[i] && !uf1.same(i, x)) ok = false;
-        if(b[i] && !uf2.same(i, x)) ok = false;
-    }
-
-    if(!ok){
-        cout << -1 << endl;
-        return 0;
-    }
-
-    ll id = 1;
-    unordered_map<ll,ll> mp;
-    ll acnt = a[x], bcnt = b[x];
-    ll alen = 0, blen = 0;
-    {
-        ll now = x;
-        while(acnt < asum){
-            now = p[now];
-            acnt += a[now];
-            mp[now] = id;
-            alen++;
-            id++;
-        }
-    }
-
-    segtree<S, op, e> seg(id);
-    {
-        ll now = x;
-        while(bcnt < bsum){
-            now = q[now];
-            bcnt += b[now];
-            blen++;
-            if(mp[now]){
-                seg.set(mp[now], seg.prod(0, mp[now]) + 1);
+    sort(query.begin(), query.end());
+    rep(i,0,m-1){
+        auto [a1, b1, c1] = query[i];
+        auto [a2, b2, c2] = query[i+1];
+        if(a1 == a2){
+            if(c1 == c2){
+                uf.unite(b1, b2);
+                uf.unite(b1+n, b2+n);
+            }else{
+                uf.unite(b1, b2+n);
+                uf.unite(b1+n, b2);
             }
         }
     }
-
-    cout << alen + blen - seg.all_prod() << endl;
+    rep(i,0,n){
+        if(uf.same(i, i+n)){
+            cout << "-1" << endl;
+            return 0;
+        }
+    }
+    vector<vector<ll>> group(n);
+    rep(i,0,n){
+        group[min(uf[i], uf[i+n])].push_back(i);
+    }
+    vector<ll> lier(n, -1), confuse(n, 0);
+    rep(i,0,n){
+        if(group[i].size() == 0) continue;
+        lier[group[i][0]] = 1;
+        rep(j,1,(ll)group[i].size()){
+            if(uf.same(group[i][0], group[i][j])){
+                lier[group[i][j]] = 1;
+            }else{
+                lier[group[i][j]] = 0;
+            }
+        }
+    }
+    for(auto [a,b,c]: query){
+        if(lier[a] == 0){
+            if(lier[b] == c) confuse[a] = 0;
+            else confuse[a] = 1;
+        }else{
+            if(lier[b] == c) confuse[a] = 1;
+            else confuse[a] = 0;
+        }
+    }
+    rep(i,0,n) cout << confuse[i];
+    cout << endl;
     return 0;
 }
