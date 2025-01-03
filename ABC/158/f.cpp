@@ -41,16 +41,44 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
+using S = struct {
+    ll num;
+    ll idx;
+};
+S op(S x1, S x2) {
+    if(x1.num >= x2.num) return x1;
+    else return x2;
+} 
+S e() {return {-INF,-1};}
+
 int main() {
-    ll n, k; cin >> n >> k;
-    queue<vector<mint>> q;
-    q.push({1});
-    rep(i,0,n-1) q.push({1, i, 1});
-    while(q.size() > 1){
-        vector<mint> a = q.front(); q.pop();
-        vector<mint> b = q.front(); q.pop();
-        q.push(convolution(a, b));
+    ll n; cin >> n;
+    vector<pll> xd(n);
+    rep(i,0,n){
+        ll x, d; cin >> x >> d;
+        xd[i] = {x,d};
     }
-    cout << q.front()[k+n-1].val() << endl;
+    sort(xd.begin(), xd.end());
+    vector<ll> x(n), d(n);
+    rep(i,0,n) x[i] = xd[i].first, d[i] = xd[i].second;
+    vector<S> vec(n);
+    rep(i,0,n) vec[i] = {x[i]+d[i], i};
+    segtree<S,op,e> seg(vec);
+    vector<ll> r(n);
+    r[n-1] = n;
+    rrep(i,n-2,0){
+        r[i] = upper_bound(x.begin(), x.end(), x[i]+d[i]-1) - x.begin();
+        // cout << r[i] << " " <<  seg.prod(i,r[i]).idx << endl;
+        chmax(r[i], r[seg.prod(i,r[i]).idx]);
+    }
+    vector<mint> dp(n+1,0), sum(n+1);
+    dp[n] = 1;
+    sum[n] = 1;
+    rrep(i,n-1,0){
+        // cout << i << " " << r[i] << endl;
+        dp[i] += sum[r[i]];
+        sum[i] = dp[i] + sum[i+1];
+    }
+    cout << sum[0].val() << endl;
     return 0;
 }

@@ -41,36 +41,69 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
-using S = long long;
-S op(S x1, S x2) {
-    return x1+x2;
-} 
-bool f(S x){
-    return 1;
-}
-S e() {return 0;}
-
 int main() {
     ll n, m; cin >> n >> m;
-    vector<ll> row, col, diag;
-    vector<ll> a(m), b(m);
-    rep(i,0,m) cin >> a[i] >> b[i], a[i]--, b[i]--;
-    rep(i,0,m){
-        row.push_back(a[i]);
-        col.push_back(b[i]);
+    vector<pll> lines;
+    ll sum = n*n;
+
+    rep(i, 0, m){
+        ll a, b; cin >> a >> b;
+        a--; b--;
+        lines.push_back({0, a});
+        lines.push_back({1, b});
+        lines.push_back({2, b-a});
+        lines.push_back({3, b+a});
     }
-    sort(row.begin(), row.end());
-    sort(col.begin(), col.end());
-    row.erase(unique(row.begin(), row.end()), row.end());
-    col.erase(unique(col.begin(), col.end()), col.end());
-    ll ans = n*(ll)row.size() + n*(ll)col.size() - (ll)row.size()*(ll)col.size();
-    rep(i,0,m){
-        ll start = a[i]-b[i], end = a[i]+n-b[i];
-        ll start2 = b[i]-a[i], end2 = b[i]+n-a[i];
-        diag.push_back(start);
-        ans += min(end,n-1)-max(start,0LL) + 1;
+    
+    sort(lines.begin(), lines.end());
+    lines.erase(unique(lines.begin(), lines.end()), lines.end());
+
+    unordered_map<ll, ll> mp;
+
+    rep(i, 0, lines.size()){
+        if(lines[i].first == 0 || lines[i].first == 1) sum -= n;
+        if(lines[i].first == 2){
+            ll l = max(0LL, lines[i].second);
+            ll r = min(n-1, lines[i].second+n-1);
+            sum -= max(0LL, r-l+1);
+        }
+        if(lines[i].first == 3){
+            ll l = max(0LL, lines[i].second-n+1);
+            ll r = min(n-1, lines[i].second);
+            sum -= max(0LL, r-l+1);
+        }
+        rep(j, i+1, lines.size()){
+            auto [t1, a1] = lines[i];
+            auto [t2, a2] = lines[j];
+            if(t1 == 0){
+                if(t2 == 1) mp[a1 * n + a2]++;
+                if(t2 == 2 && a2 + a1 < n && a1 + a2 >= 0) mp[a1 * n + a1 + a2]++;
+                if(t2 == 3 && a2 - a1 >= 0 && a2 - a1 < n) mp[a1 * n + a2 - a1]++;
+            }
+            if(t1 == 1){
+                if(t2 == 2 && a1 - a2 >= 0 && a1 - a2 < n) mp[(a1 - a2) * n + a1]++;
+                if(t2 == 3 && a2 - a1 < n && a2 - a1 >= 0) mp[(a2 - a1) * n + a1]++;
+            }
+            if(t1 == 2){
+                if(t2 == 3){
+                    if(abs(a1 - a2) % 2 == 0){
+                        ll x = (a1 + a2) / 2 - a1;
+                        ll y = (a1 + a2) / 2;
+                        if(x >= 0 && x < n && y >= 0 && y < n) mp[x * n + y]++;
+                    }
+                }
+            }
+        }
+    }
 
 
+    unordered_map<ll, ll> cmp;
+    rep(i,2,lines.size()+1) cmp[i*(i-1)/2] = i-1;
+
+    for(auto [key, val] : mp){
+        sum += cmp[val];
     }
+
+    cout << sum << endl;
     return 0;
 }

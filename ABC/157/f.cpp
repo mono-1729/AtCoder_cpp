@@ -1,15 +1,45 @@
 #include <bits/stdc++.h>
+#include <unordered_map>
+#include <stdlib.h>
+#include <boost/multiprecision/cpp_int.hpp>
+#include <atcoder/all>
+using namespace atcoder;
+using namespace boost::multiprecision;
 using namespace std;
-using ll = long long;
-#define rep(i, a, n) for(int i = a; i < n; i++)
-#define rrep(i, a, n) for(int i = a; i >= n; i--)
+#define rep(i, a, n) for(ll i = a; i < n; i++)
+#define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
+constexpr int IINF = 1001001001;
+constexpr ll INF = 1LL<<60;
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
-/*
-前提
-- 点(位置ベクトル)を複素数型で扱う
-- 実軸(real)をx軸、虚軸(imag)をy軸として見る
-- 比較するときは、計算誤差を意識して EPS で判定 (equal関数)
-*/
+using mint = modint998244353;
+
+ll gcd(ll a, ll b){
+    if(a%b == 0){
+      return b;
+    }else{
+      return gcd(b, a%b);
+    }
+}
+
+ll lcm(ll a, ll b){
+    return a*b / gcd(a, b);
+}
+
+ll powMod(ll x, ll n) {
+    if (n == 0) return 1 % MOD;
+    ll val = powMod(x, n / 2);
+    val *= val;
+    val %= MOD;
+    if (n % 2 == 1) val *= x;
+    return val % MOD;
+}
 
 namespace geometry {
     using D = long double;
@@ -231,3 +261,38 @@ namespace geometry {
     }
 };
 using namespace geometry;
+
+int main() {
+    cout << fixed << setprecision(15);
+    ll n, k; cin >> n >> k;
+    vector<ll> x(n), y(n), c(n);
+    rep(i,0,n){
+        cin >> x[i] >> y[i] >> c[i];
+    }
+    long double l = 0, r = 1e7;
+    while(r - l > 1e-8){
+        long double mid = (l + r) / 2;
+        bool ok = false;
+        rep(i,0,n)rep(j,1,n+1){
+            Circle c1 = {{x[i],y[i]},mid/c[i]};
+            Circle c2 = {{x[j],y[j]},mid/c[j]};
+            Point center;
+            D tmp = dist(c1.p,c2.p);
+            if(dist(c1.p,c2.p) > c1.r + c2.r) continue;
+            if(dist(c1.p,c2.p) < abs(c1.r - c2.r)){
+                center = c1.r < c2.r ? c1.p : c2.p;
+            }else{
+                center = crosspoint(c1,c2).first;
+            }
+            ll cnt = 0;
+            rep(k,0,n){
+                if(dist({x[k],y[k]},center) <= mid/c[k] + 1e-8) cnt++;
+            }
+            if(cnt >= k) ok = true;
+        }
+        if(ok) r = mid;
+        else l = mid;
+    }
+    cout << r << endl;                
+    return 0;
+}

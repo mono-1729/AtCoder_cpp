@@ -42,15 +42,12 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n, k; cin >> n >> k;
-    queue<vector<mint>> q;
-    q.push({1});
-    rep(i,0,n-1) q.push({1, i, 1});
-    while(q.size() > 1){
-        vector<mint> a = q.front(); q.pop();
-        vector<mint> b = q.front(); q.pop();
-        q.push(convolution(a, b));
+    ll n, m; cin >> n >> m;
+    rep(i,0,(m+1)/2){
+        cout << i+1 << " " << 2*((m+1)/2)-i << endl;
     }
-    cout << q.front()[k+n-1].val() << endl;
+    rep(i,0,m/2){
+        cout << 2*((m+1)/2)+i+1 << " " << 2*((m+1)/2)+2*(m/2)+1-i << endl;
+    }
     return 0;
 }
