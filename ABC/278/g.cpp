@@ -42,12 +42,93 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n, l, r; cin >> n >> l >> r;
-    vector<ll> grundy(n+1,-1);
-    vector<ll> grundy_mex(n+1,0);
-    rep(i,0,n+1){
+    ll n, llen, rlen; cin >> n >> llen >> rlen;
+    if(llen != rlen){
+        cout << "First" << endl;
+        ll p;
+        if(n%2 == llen%2){
+            cout << (n-llen)/2 + 1 << " " << llen << endl;
+            p = (n-llen)/2 + llen;
+        }
+        else{
+            cout << (n-llen-1)/2 + 1 << " " << llen+1 << endl;
+            p = (n-llen-1)/2 + llen+1;
+        }
+        while(true){
+            ll x, y; cin >> x >> y;
+            if(x == 0 && y == 0) return 0;
+            if(x <= p) cout << p+x << " " << y << endl;
+            else cout << x-p << " " << y << endl;
+        }
+    }else{
+        vector<ll> grundy(n+1);
+        grundy[0] = 0;
+        rep(i,1,n+1){
+            unordered_map<ll,ll> mp;
+            rep(left,0,i){
+                if(left+llen > i) break;
+                mp[grundy[left] ^ grundy[i-llen-left]] = 1;
+            }
+            rep(num,0,n+1){
+                if(mp[num] == 0){
+                    grundy[i] = num;
+                    break;
+                }
+            }
+        }
+        vector<ll> field(n,1), rid(n);
+        rep(i,0,n) rid[i] = n;
+        ll nowg = grundy[n];
+        auto myturn = [&]() {
+            ll now = 0;
+            while(true){
+                if(now == rid[now]){
+                    now++;
+                    continue;
+                }
+                ll r = rid[now];
+                ll flg = false;
+                rep(l,now,r){
+                    if(l+llen > r) continue;
+                    if(nowg == (grundy[l-now] ^ grundy[r-now-llen-(l-now)] ^ grundy[r-now])){
+                        cout << l+1 << " " << llen << endl;
+                        rep(p,l,l+llen) field[p] = 0;
+                        flg = true;
+                        break;
+                    }
+                }
+                if(flg) break;
+                now = r;
+            }
+        };
+        auto opturn = [&]() {
+            ll x, y; cin >> x >> y;
+            if(x == 0 && y == 0) return false;
+            x--;
+            rep(i,x,x+y) field[i] = 0;
+            ll now = 0;
+            nowg = 0;
+            while(now < n){
+                if(field[now] == 0){
+                    rid[now] = now;
+                    now++;
+                    continue;
+                }
+                ll r = now;
+                while(r < n && field[r] == 1) r++;
+                nowg ^= grundy[r-now];
+                rep(p,now,r) rid[p] = r;
+                now = r;
+            }
+            return true;
+        };
+        if(grundy[n] == 0) cout << "Second" << endl;
+        else {
+            cout << "First" << endl;
+            myturn();
+        }
+        while(opturn()) myturn();
 
-        vector<ll>
     }
     return 0;
 }
