@@ -43,7 +43,6 @@ ll powMod(ll x, ll n) {
 
 int main() {
     ll n, k; cin >> n >> k;
-    k--;
     vector<ll> a(n), b(n), c(n);
     rep(i,0,n) cin >> a[i];
     rep(i,0,n) cin >> b[i];
@@ -53,8 +52,8 @@ int main() {
     sort(c.begin(), c.end(), greater<ll>());
     priority_queue<ll, vector<ll>, greater<ll>> pq;
     priority_queue<tuple<ll,ll,ll,ll>> pq2;
-    pq2.push({a[0]+b[0]+c[0], 0, 0, 0});
-    pq.push(a[0]+b[0]+c[0]);
+    pq2.push({a[0]*b[0]+b[0]*c[0]+c[0]*a[0], 0, 0, 0});
+    pq.push(a[0]*b[0]+b[0]*c[0]+c[0]*a[0]);
     unordered_set<ll> st;
     st.insert(0);
     while(!pq2.empty()){

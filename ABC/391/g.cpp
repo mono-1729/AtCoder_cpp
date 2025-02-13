@@ -11,6 +11,7 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
+#define all(x) (x).begin(), (x).end()
 //constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
@@ -44,69 +45,33 @@ ll powMod(ll x, ll n) {
 int main() {
     ll n, m; cin >> n >> m;
     string s; cin >> s;
-    vector<vector<mint>> powm(1000, vector<mint>(m+1));
-    vector<vector<ll>> type(n+1, vector<ll>(n+2, 0));
-    rep(i,0,n+1){
-        rep(j,i,n+2){
-            unordered_set<ll> st;
-            rep(k,i,min(j,n)){
-                st.insert(s[k]-'a');
+    vector<mint> dp(1<<n, 0);
+    dp[0] = 1;
+    rep(i,0,m){
+        vector<mint> ndp(1<<n,0);
+        rep(j,0,1<<n){
+            if(dp[j] == 0) continue;
+            vector<ll> lcs(n+1,0), nlcs(n+1,0);
+            rep(k,0,n){
+                if(j&(1<<k)) lcs[k+1] = lcs[k]+1;
+                else lcs[k+1] = lcs[k];
             }
-            type[i][j] = st.size();
+            rep(c,0,26){
+                rep(k,0,n){
+                    if(s[k] == 'a'+c) nlcs[k+1] = lcs[k]+1;
+                    else nlcs[k+1] = max(lcs[k+1], nlcs[k]);
+                }
+                ll nj = 0;
+                rep(k,0,n) if(nlcs[k] < nlcs[k+1]) nj += (1<<k);
+                ndp[nj] += dp[j];
+            }
         }
+        swap(dp, ndp);
     }
-    rep(i,0,1000){
-        powm[i][0] = 1;
-        rep(j,1,m+1){
-            powm[i][j] = powm[i][j-1] * i;
-        }
-    }
-    vector<ll> num(n+1, 0);
-    vector<mint> ans(n+1, 0);
-    auto dfs = [&](auto &dfs, ll idx, ll cnt) -> void {
-        if(idx == n){
-            ll now = 0;
-            ll sum = 0;
-            ll base = 0;
-            rep(i,0,n+1){
-                ll next = now+num[i];
-                if(i != 0)sum += 26 - type[now+1][next+1];
-                else sum += 26 - type[now][next+1];
-                now = next;
-                if(now == n){
-                    base = i;
-                    break;
-                }
-            }
-            if(cnt == n-1){
-                base = n;
-            }
-            for(auto x : num) cout << x << " ";
-            cout << endl;
-            cout << base << " " << sum << endl;
-            ans[base] += powm[sum][m-base];
-            return;
-        }
-        if(cnt == n){
-            num[idx] = 0;
-            dfs(dfs, idx+1, cnt);
-        }else{
-            if(idx == 0){
-                rep(i,0,n-cnt+1){
-                    num[idx] = i;
-                    dfs(dfs, idx+1, cnt+i);
-                }
-            }else{
-                rep(i,1,n-cnt+1){
-                    num[idx] = i;
-                    dfs(dfs, idx+1, cnt+i);
-                }
-            }
-            
-        }
-    };
-    dfs(dfs, 0, 0);
-    for(auto x : ans) cout << x.val() << " ";
+
+    vector<mint> ans(n+1);
+    rep(i,0,1<<n) ans[__popcount(i)] += dp[i];
+    rep(i,0,n+1) cout << ans[i].val() << " ";
     cout << endl;
     return 0;
 }
