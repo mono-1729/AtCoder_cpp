@@ -43,6 +43,41 @@ ll powMod(ll x, ll n) {
 }
 
 int main() {
-    ll n; cin >> n;
-    return 0;
+    int n; cin >> n;
+    priority_queue<pll,vector<pll>,greater<pll>> pq1;
+    priority_queue<ll> pq2;
+    map<ll,ll> mp;
+    ll ans = n;
+
+    rep(i,0,n){
+        ll a, b; cin >> a >> b;
+        if(a < b){
+            mp[a]--;
+            mp[b]++;
+            ans--;
+        }else{
+            pq1.push({b,a});
+        }
+    }
+
+    ll cnt = 0;
+    for(auto [key, val]: mp){
+        while(!pq1.empty() && pq1.top().first <= key){
+            pq2.push(pq1.top().second); pq1.pop();
+        }
+        cnt += val;
+        while(cnt < 0){
+            cnt++;
+            ans--;
+            if(pq2.empty() || pq2.top() <= key){
+                cout << -1 << endl;
+                return 0;
+            }else{
+                ll a = pq2.top(); pq2.pop();
+                mp[a]--;
+
+            }
+        }
+    }
+    cout << ans << endl;
 }
