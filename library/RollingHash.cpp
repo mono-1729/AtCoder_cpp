@@ -1,227 +1,144 @@
 #include <bits/stdc++.h>
-#include <stdlib.h>
+// #include <atcoder/all>
 using namespace std;
-#define rep(i, a, n) for(ll i = a; i < n; i++)
-#define rrep(i, a, n) for(ll i = a; i >= n; i--)
+// using namespace atcoder;
+#define rep(i, a, n) for(int i = a; i < n; i++)
+#define rrep(i, a, n) for(int i = a; i >= n; i--)
+#define inr(l, x, r) (l <= x && x < r)
 #define ll long long
-#define pii pair<int, int>
-#define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
-constexpr ll MOD = 998244353;
+#define ld long double
+
+// using mint = modint1000000007;
+// using mint = modint998244353;
 constexpr int IINF = 1001001001;
-constexpr ll INF = 1LL<<60;
+constexpr ll INF = 1e18;
+
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
-template <ll MOD> class modint {
-	ll val;
-	static vector<modint<MOD>> factorial_vec;
+
+// Reference: https://qiita.com/keymoon/items/11fac5627672a6d6a9f6
+#define ull unsigned long long 
+// ハッシュの計算用
+constexpr ull MASK30 = (1LL<<30)-1;
+constexpr ull MASK31 = (1LL<<31)-1;
+constexpr ull MOD = (1LL<<61)-1;
+constexpr ull MASK61 = MOD;
+constexpr ull POSITIVIZER = MOD * ((1<<3)-1);
+
+// mod 2^61-1 を計算する関数
+ull calcMod(ull x){
+    ull xu = x>>61;
+    ull xd = x&MASK61;
+    ull res = xu+xd;
+    if(res >= MOD) res -= MOD;
+    return res;
+}
+
+// a*b mod 2^61-1 を返す関数
+ull mul(ull a, ull b){
+    ull au = a>>31, ad = a&MASK31;
+    ull bu = b>>31, bd = b&MASK31;
+    ull mid = ad*bu+au*bd;
+    ull midu = mid>>30;
+    ull midd = mid&MASK30;
+    return au*bu*2+midu+(midd<<31)+ad*bd; // ハッシュの計算の時に mod をとった方が早くなる、
+}
+
+// a^b mod 2^61-1 を計算
+ull modpow(ull a, ull b){
+    ull res = 1;
+    while(b > 0){
+        if(b&1) res = calcMod(mul(res, a));
+        a = calcMod(mul(a, a));
+        b >>= 1;
+    }
+    return res;
+}
+
+// 基数を乱数を使って定める（ハック対策）
+// Reference: https://trap.jp/post/1036/
+ull randomized_base(ull r=37, ull max_s=127){
+    ull k = rand()+max_s+1;
+    while(gcd(MOD-1, k) != 1 || modpow(r, k) <= max_s){
+        k = rand()+max_s+1;
+    }
+    return modpow(r, k);
+}
+
+
+template<typename Str>
+class RollingHash {
+    int n; // 文字列のサイズ
+    ull base; // 基数 
+    vector<ull> hash, powmemo; // ハッシュテーブルと基数の累乗のメモ
+
+
+    // ハッシュテーブル構築
+    void build(const Str &s){
+        n = (int)s.size();
+        hash.resize(n+1);
+        powmemo.resize(n+1);
+        powmemo[0] = 1;
+        hash[0] = 0;
+        for(int i = 0; i < n; i++){
+            hash[i+1] = calcMod(mul(hash[i], base)+s[i]);
+            powmemo[i+1] = calcMod(mul(powmemo[i], base));
+        }
+    }
+
 public:
-
-	ll get() const { return (ll)val; }
-	// コンストラクタ
-	modint(ll x = 0){
-		val = x % MOD;
-		if(val < 0) x += MOD;
-	}
-
-	// 入出力ストリーム
-	friend constexpr istream &operator>>(istream &is, modint<MOD> &x){
-		ll y; is >> y;
-		x = y;
-		return is;
-	}
-	friend constexpr ostream &operator<<(ostream &os, const modint<MOD> &x){
-		return os << x.val;
-	}
-
-	// 算術演算子
-	modint<MOD> operator -(){return modint<MOD>(-val);}
-	modint<MOD> operator +(const modint<MOD> &r) const { return modint<MOD>(*this) += r; }
-	modint<MOD> operator -(const modint<MOD> &r) const { return modint<MOD>(*this) -= r; }
-	modint<MOD> operator *(const modint<MOD> &r) const { return modint<MOD>(*this) *= r; }
-	modint<MOD> operator /(const modint<MOD> &r) const { return modint<MOD>(*this) /= r; }
-
-	// 代入演算子
-	modint<MOD> &operator +=(const modint<MOD> &r){
-		val += r.val;
-		if(val >= MOD) val -= MOD;
-		return *this;
-	}
-	modint<MOD> &operator -=(const modint<MOD> &r){
-		if(val < r.val) val += MOD;
-		val -= r.val;
-		return *this;
-	}
-	modint<MOD> &operator *=(const modint<MOD> &r){
-		val = val*r.val%MOD;
-		if(val < 0) val += MOD;
-		return *this;
-	}
-	modint<MOD> &operator /=(const modint<MOD> &r){
-		*this *= inv(r);
-		return *this;
-	}
-
-	//等価比較演算子
-	bool operator ==(const modint<MOD>& r){return this -> val == r.val;}
-	bool operator !=(const modint<MOD>& r){return this -> val != r.val;}
-	bool operator <(const modint<MOD>& r){return this -> val < r.val;}
-	bool operator <=(const modint<MOD>& r){return this -> val <= r.val;}
-	bool operator >(const modint<MOD>& r){return this -> val > r.val;}
-	bool operator >=(const modint<MOD>& r){return this -> val >= r.val;}
-
-	// 累乗
-	static modint<MOD> modpow(modint<MOD> num, ll exp){
-		if(!exp) return modint<MOD>(1); // 0乗
-		modint<MOD> ret(1);
-		modint<MOD> tmp = num;
-		while(exp){
-			if(exp&1) ret *= tmp;
-			tmp *= tmp;
-			exp >>= 1;
-		}
-		return ret;
-	}
-
-	// 逆元
-	static modint<MOD> inv(modint<MOD> num){
-		return modpow(num, MOD-2);
-	}
-
-	// 階乗
-	static modint<MOD> factorial(ll n){
-		modint<MOD> ret(1);
-		if(n == 0) return ret;
-		if((ll)factorial_vec.size() >= n) return factorial_vec[n-1];
-		ret = factorial(n-1)*n;
-		factorial_vec.push_back(ret);
-		return ret;
-	}
-
-	// コンビネーション
-	static modint<MOD> combination(ll n, ll r){
-		return factorial(n) / factorial(r) / factorial(n-r);
-	}
-
-};
-
-using mint = modint<MOD>;
-template <ll MOD> vector<modint<MOD>> modint<MOD>::factorial_vec;
-
-int getrandmax() {
-    static uint32_t y = time(NULL);
-    y ^= (y << 13); y ^= (y >> 17);
-    y ^= (y << 5);
-    return abs((int)y);
-}
-// [l, r]
-int getrand(int l, int r) {
-    return getrandmax() % (r - l + 1) + l;
-}
-typedef modint<1000000007> mint1;
-typedef modint<1000000009> mint2;
-int primes[10] = { 10007, 10009, 10037, 10039, 10061, 10067, 10069, 10079, 10091, 10093 };
-bool isShuffle = false;
-struct RollingHash {
-    mint1 p1; mint2 p2;
-    int n;
-    vector<mint1> m1; vector<mint2> m2;
-    vector<mint1> v1; vector<mint2> v2;
-    vector<mint1> r1; vector<mint2> r2;
-
-    RollingHash() {
-        if (!isShuffle) {
-            rep(i, 0, 101) { int a = getrand(0, 9); int b = getrand(0, 9); swap(primes[a], primes[b]); }
-            isShuffle = true;
-        }
-        p1 = primes[0], p2 = primes[1];
+    RollingHash(const Str &s, ull _base=0){
+        if(_base != 0) base = _base;
+        else base = randomized_base();
+        build(s);
     }
-
-    void init(string s, char o = 'a') {
-        vector<int> v;
-        for(auto c: s) v.push_back(c - o + 1);
-        init(v);
-    }
-
-    void init(vector<int> s) {
-        n = s.size();
-        m1.resize(n); m2.resize(n); v1.resize(n); v2.resize(n); r1.resize(n); r2.resize(n);
-
-        m1[0] = 1; m2[0] = 1;
-        v1[0] = s[0]; v2[0] = s[0];
-
-        rep(i, 1, n) {
-            m1[i] = m1[i - 1] * p1;
-            m2[i] = m2[i - 1] * p2;
-            v1[i] = v1[i - 1] + m1[i] * s[i];
-            v2[i] = v2[i - 1] + m2[i] * s[i];
-        }
-
-        r1[n - 1] = mint1(1) / m1[n - 1];
-        rrep(i, n - 2, 0) r1[i] = r1[i + 1] * p1;
-
-        r2[n - 1] = mint2(1) / m2[n - 1];
-        rrep(i, n - 2, 0) r2[i] = r2[i + 1] * p2;
-    }
-    // s[l..r]
-    inline pair<mint1, mint2> hash(int l, int r) {
-        if (l > r) return make_pair(0,0);
-        assert(l <= r); assert(r < n);
-        mint1 a = v1[r];
-        if (l) a -= v1[l - 1];
-        a *= r1[l];
-
-        mint2 b = v2[r];
-        if (l) b -= v2[l - 1];
-        b *= r2[l];
-
-        return make_pair(a, b);
-    }
-    // s[l..r]
-	inline ll llhash(int l, int r) {
-		auto h = hash(l, r);
-		return (ll)h.first.get() * (ll)1000000009 + (ll)h.second.get();
-	}
-};
-
-
-
-
-int N;
-string S[201010];
-map<ll, int> cnt[26];
-//---------------------------------------------------------------------------------------------------
-int main() {
-    cin >> N;
-    rep(i, 0, N) cin >> S[i];
-    rep(i, 0, N) reverse(S[i].begin(), S[i].end());
-    sort(S, S + N, [&](string a, string b) { return a.length() < b.length(); });
-
-    ll ans = 0;
     
-    RollingHash rh;
-    rep(i, 0, N) {
-        rh.init(S[i]);
-        int n = S[i].length();
-        
-        int msk = 0;
-        rrep(j, n - 1, 0) {
-            msk |= (1 << (S[i][j] - 'a'));
-            ll hh = rh.llhash(0, j - 1);
-            rep(c, 0, 26) if ((msk & (1 << c)) && cnt[c].count(hh)) {
-                ans += cnt[c][hh];
-            }
-        }
-
-        ll h = rh.llhash(0, n - 2);
-        cnt[S[i][n - 1] - 'a'][h]++;
+    // 開区間 [l, r) の hash 値を求める
+    ull get(int l, int r = -1){
+        if(r == -1) r = n;
+        assert(l <= r);
+        if(l == r) return 0LL;
+        return calcMod(hash[r] + POSITIVIZER - mul(hash[l], powmemo[r-l]));
     }
 
-    cout << ans << endl;
-	return 0;
+    // hash a+b を求める（b の文字列としてのサイズが必要）
+    ull unite(ull a, ull b, int bsize){
+        return calcMod(mul(a, powmemo[bsize])+b);
+    }
+
+    // 開区間 [l1, r1) と ハッシュテーブル b の開区間 [l2, r2) における最長共通接頭辞
+    int LCP(const RollingHash &b, int l1, int r1, int l2, int r2) {
+        int len = min(r1 - l1, r2 - l2);
+        int low = -1, high = len + 1;
+        while(high - low > 1) {
+            int mid = (low + high) / 2;
+            if(get(l1, l1 + mid) == b.get(l2, l2 + mid)) low = mid;
+            else high = mid;
+        }
+        return low;
+    }
+};
+
+int main(){
+    string s; cin >> s;
+    ull b = randomized_base(); // 基数を固定する
+    RollingHash<string> rh_s(s, b);
+    string t = s;
+    reverse(t.begin(), t.end());
+    RollingHash<string> rh_t(t, b);
+
+    int n = (int)s.size();
+    int mx = 0;
+    rrep(i, n-1, 0){
+        if(rh_t.get(0, i+1) == rh_s.get(n-1-i, n)){
+            mx = i;
+            break;
+        }
+    }
+    cout << s;
+    rep(i, mx+1, n){
+        cout << t[i];
+    }
+    cout << endl;
+    return 0;
 }
-
-
-
-
-
