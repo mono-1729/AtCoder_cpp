@@ -30,32 +30,29 @@ public:
         return res;
     }
 
-    // [l, r]の和
+    // [l, r)の和
     ll sum(ll l, ll r){
-        return sum_sub(r)-sum_sub(l-1);
+        return sum_sub(r-1)-sum_sub(l-1);
     }
 
-    // a[0]+a[1]+...+a[i] >= x となる最小のiを求める（任意のkでa[k]>=0が必要）
+    // a[0]+a[1]+...+a[i-1] >= x となる最小のiを求める（任意のkでa[k]>=0が必要）
     ll lower_bound(ll x){
         if(x <= 0){
             return 0;
         }else{
             ll i = 0, len = 1;
-
             //最大としてありうる区間の長さを取得する
             //n以下の最小の二乗のべき(BITで管理する数列の区間で最大のもの)を求める
             while(len < n) len *= 2;
-
             //区間の長さは調べるごとに半分になる
-            while(0 < len){
+            for(;len>0;len=len>>1) {
                 //その区間を採用する場合
-                if(i+len < n and a[i+len] < x){
-                    x -= a[i+len];
-                    i += len;
+                if(i+len<n && a[i+len]<x){
+                    x-=a[i+len];
+                    i+=len;
                 }
             }
-            return i;
+            return i+1;
         }
     }
-
 };
