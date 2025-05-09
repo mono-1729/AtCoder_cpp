@@ -71,6 +71,23 @@ struct Trie {
     }
 };
 
+// struct Trie {
+//     vector<map<char,int>> to;
+//     Trie(): to(1) {}
+//     int add(const string& s) {
+//       int v = 0;
+//       for (char c : s) {
+//         if (to[v].count(c) == 0) {
+//           int u = to.size();
+//           to[v][c] = u;
+//           to.push_back(map<char,int>());
+//         }
+//         v = to[v][c];
+//       }
+//       return v;
+//     }
+// };
+
 int main() {
     Trie<26, 'A'> trie;
     trie.insert("FIRE");
