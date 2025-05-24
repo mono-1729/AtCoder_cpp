@@ -17,19 +17,19 @@ template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 // 辺
 struct Edge
 {
-	int from;
-	int to;
-	int cost;
+	ll from;
+	ll to;
+	ll cost;
 };
 
 // ベルマンフォード法 (基本実装)
 // 負閉路が存在する場合 true を返す
 // distances は頂点数と同じサイズ, 全要素 INF で初期化しておく
-bool BellmanFord(vector<Edge> &edges, vector<ll> &dist, int start){
+bool BellmanFord(vector<Edge> &edges, vector<ll> &dist, ll start){
     fill(dist.begin(), dist.end(), INF);
 	dist[start] = 0;
     // 負の閉路がなければ、(頂点数-1)回の更新で最短路が決まる
-	rep(i, 0, (int)dist.size()){
+	rep(i, 0, (ll)dist.size()){
 		bool changed = false;
 		// 各辺について
 		for (const auto& edge : edges){
@@ -47,7 +47,7 @@ bool BellmanFord(vector<Edge> &edges, vector<ll> &dist, int start){
 		}
 	}
 	// 負閉路が影響を与える範囲を計算
-	// rep(i, 0, (int)dist.size()){
+	// rep(i, 0, (ll)dist.size()){
 	// 	// 各辺について
 	// 	for (const auto& edge : edges){
 	// 		// to までの新しい距離

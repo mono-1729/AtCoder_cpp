@@ -16,7 +16,7 @@ struct Mo {
   template< typename AL, typename AR, typename EL, typename ER, typename O >
   void build(const AL &add_left, const AR &add_right, const EL &erase_left, const ER &erase_right, const O &out) {
     int q = (int) lr.size();
-    int bs = n / min< int >(n, sqrt(q));
+    int bs = n / min< int >(n, sqrt((double)q));
     vector< int > ord(q);
     iota(begin(ord), end(ord), 0);
     sort(begin(ord), end(ord), [&](int a, int b) {
