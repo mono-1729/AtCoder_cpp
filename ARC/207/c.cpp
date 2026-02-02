@@ -1,14 +1,15 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
-#include <unordered_map>
 #include <stdlib.h>
-#include <boost/multiprecision/cpp_int.hpp>
 #include <atcoder/all>
 using namespace atcoder;
-using namespace boost::multiprecision;
 using namespace std;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define inr(l, x, r) (l <= x && x < r)
 #define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define all(x) (x).begin(), (x).end()
@@ -20,27 +21,6 @@ template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
 using mint = modint998244353;
-
-ll gcd(ll a, ll b){
-    if(a%b == 0){
-      return b;
-    }else{
-      return gcd(b, a%b);
-    }
-}
-
-ll lcm(ll a, ll b){
-    return a*b / gcd(a, b);
-}
-
-ll powMod(ll x, ll n) {
-    if (n == 0) return 1 % MOD;
-    ll val = powMod(x, n / 2);
-    val *= val;
-    val %= MOD;
-    if (n % 2 == 1) val *= x;
-    return val % MOD;
-}
 
 template <class T, T (*op)(T, T), T (*e)(), class F, T (*mapping)(F, T), F (*composition)(F, F), F (*id)()> 
 class LazySegmentTree {
@@ -222,48 +202,52 @@ public:
     }
 };
 
-//区間加算・区間和取得
-struct S{
-    mint value;
-    ll size;
-};
-using F = mint;
+using S = long long;
+S op1(S a, S b) {
+    return a|b;
+} 
+ll border;
+bool f(S x){
+    return (x|border) == border;
+}
+S e1() {return 0;}
 
-S op(S a, S b){ return {a.value+b.value, a.size+b.size}; }
-S e(){ return {0, 0}; }
-S mapping(F f, S x){ return {x.value*f, x.size}; }
-F composition(F f, F g){ return f*g; }
-F id(){ return 1; }
+//区間変更・区間最大値取得
+using S = long long;
+using F = long long;
+const F ID = -8e18;
+
+S op(S a, S b){ return std::max(a, b); }
+S e(){ return -INF; }
+S mapping(F f, S x){ return (f == ID ? x : max(x,f)); }
+F composition(F f, F g){ return (f == ID ? g : max(f,g)); }
+F id(){ return ID; }
 // ll n;
-// vector<S> v(n, {0, 1});
+// vector<S> v(n);
 // LazySegmentTree<S, op, e, F, mapping, composition, id> seg(v);
 
 int main() {
     ll n; cin >> n;
-    vector<ll> x(n), y(n);
-    rep(i,0,n) x[i] = i, cin >> y[i], y[i]--;
-    mint pow2n = powMod(2,n);
-    mint ans = pow2n-1;
-    ans *= (n-1)*(n-1);
-    vector<S> vec(n-1,{1,1});
-    rep(i,1,n) ans -= ((mint)powMod(2,i)-1)*(n-1)*4;
-    rep(_,0,4){
-        LazySegmentTree<S,op,e,F,mapping,composition,id> seg(vec);
-        rep(i,0,n-1){
-            seg.apply(0,y[i],2);
-            ans += seg.prod(0,n-1).value-(n-1);
-        }
-        rep(i,0,n){
-            ll nx = y[i], ny = n-1-x[i];
-            x[i] = nx, y[i] = ny;
-        }
-        {
-            vector<ll> nx(n), ny(n);
-            rep(i,0,n) nx[x[i]] = x[i], ny[x[i]] = y[i];
-            swap(x,nx);
-            swap(y,ny);
+    vector<ll> a(n);
+    rep(i,0,n) cin >> a[i];
+    segtree<S,op1,e1> seg1(a);
+    LazySegmentTree<S,op,e,F,mapping,composition,id> seg2(n+1);
+    vector<tuple<ll,ll,ll,ll>> query;
+    rep(i,0,n){
+        ll l = i+1;
+        while(l <= n){
+            border = seg1.prod(i,l);
+            ll r = seg1.max_right<f>(l);
+            query.emplace_back(border,i,l,r+1);
+            if(r == n) break;
+            l = r+1;
         }
     }
-    cout << ans.val() << endl;
+    sort(all(query));
+    seg2.set(0,0);
+    for(auto [_,s,l,r]: query){
+        seg2.apply(l,r,seg2.get(s)+1);
+    }
+    cout << seg2.all_prod() << endl;
     return 0;
 }

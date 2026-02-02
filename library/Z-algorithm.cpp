@@ -11,16 +11,16 @@ using namespace std;
 constexpr ll MOD = 998244353;
 
 
-vector<int> Z_algorithm(string S) {
-	int c = 0, n = S.size();
-	vector<int> Z(n, 0);
-	for (int i = 1; i < n; i++) {
-		int l = i - c;
+vector<ll> Z_algorithm(string S) {
+	ll c = 0, n = S.size();
+	vector<ll> Z(n, 0);
+	for (ll i = 1; i < n; i++) {
+		ll l = i - c;
 		if (i + Z[l] < c + Z[c]) {
 			Z[i] = Z[l];
 		}
 		else {
-			int j = max(0, c + Z[c] - i);
+			ll j = max(0LL, c + Z[c] - i);
 			while (i + j < n && S[j] == S[i + j])j++;
 			Z[i] = j;
 			c = i;

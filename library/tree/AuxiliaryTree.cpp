@@ -68,8 +68,13 @@ inline int auxiliary_tree(vector<int> &vs, vector<vector<int>> &g0) {
         while(cur > 0 && ls[stk[cur-1]] < fs[v]) --cur;
         if(cur > 0) {
             g0[stk[cur-1]].push_back(v);
+            g0[v].push_back(stk[cur-1]);
         }
-        g0[v].clear();
+        // 有向
+        // if(cur > 0) {
+        //     g0[stk[cur-1]].push_back(v);
+        // }
+        // g0[v].clear();
         stk[cur++] = v;
         prv = v;
     }

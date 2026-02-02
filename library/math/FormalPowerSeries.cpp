@@ -74,5 +74,6 @@ ostream& operator<<(ostream&o,const fps&a) {
 }
 
 int main() {
+    
     return 0;
 }
