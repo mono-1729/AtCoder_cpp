@@ -43,48 +43,44 @@ ll powMod(ll x, ll n, ll mod) {
     return val % mod;
 }
 
-ll maxnum=200005;
-vector<ll> fac(maxnum), inv(maxnum), finv(maxnum);
-void init_fac(){
-    fac[0] = fac[1] = 1;
-    inv[1] = 1;
-    finv[0] = finv[1] = 1;
-    rep(i, 2, maxnum){
-        fac[i] = fac[i-1]*i%MOD;
-        inv[i] = MOD-MOD/i*inv[MOD%i]%MOD;
-        finv[i] = finv[i-1]*inv[i]%MOD;
-    }
-}
-ll nCr(ll n, ll r){
-    if(n < 0 or n-r < 0 or r < 0) return 0;
-    return fac[n]*(finv[n-r]*finv[r]%MOD)%MOD;
-}
-ll nHr(ll n, ll r){
-    return nCr(n+r-1, r);
-}
-
 int main() {
-    init_fac();
-    ll n, m; cin >> n >> m;
-    vector<ll> c(m);
-    rep(i,0,m) cin >> c[i];
-    queue<vector<mint>> q;
-    rep(i,0,m){
-        vector<mint> v(c[i]+1);
-        rep(j,1, c[i]+1) v[j] = nCr(c[i], j);
-        q.push(v);
-    }
-    while(q.size() > 1){
-        auto v1 = q.front(); q.pop();
-        auto v2 = q.front(); q.pop();
-        q.push(convolution(v1, v2));
-    }
-    vector<mint> vec = q.front();
-    mint ans = 0;
+    ll n; cin >> n;
+    vector<ll> x(n), y(n);
+    rep(i,0,n) cin >> x[i] >> y[i];
     rep(i,0,n){
-        // cout << i << " " << (nCr(n, i)-vec[i]).val() << endl;
-        ans += ((mint)n)/(n-i)*(nCr(n, i)-vec[i])/(mint)(nCr(n, i));
+        if(abs(x[i]+y[i])%2 != abs(x[0]+y[0])%2){
+            cout << -1 << endl;
+            return 0;
+        }
     }
-    cout << ans.val() << endl;
+    vector<ll> arms;
+    rrep(i,30,0) arms.push_back(1LL<<i);
+    if((x[0]+y[0])%2 == 0) arms.push_back(1);
+    cout << arms.size() << endl;
+    for(auto l: arms) cout << l << " ";
+    cout << endl;
+    rep(i,0,n){
+        for(auto l: arms){
+            if(abs(x[i]) > abs(y[i])){
+                if(x[i] > 0){
+                    cout << "R";
+                    x[i] -= l;
+                }else{
+                    cout << "L";
+                    x[i] += l;
+                }
+            }else{
+                if(y[i] > 0){
+                    cout << "U";
+                    y[i] -= l;
+                }else{
+                    cout << "D";
+                    y[i] += l;
+                }
+            }
+        }
+        cout << endl;
+    }
+    
     return 0;
 }

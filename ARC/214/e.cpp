@@ -1,7 +1,48 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 #include <stdlib.h>
 #include <immintrin.h>
+#include <atcoder/all>
+using namespace atcoder;
 using namespace std;
+#define rep(i, a, n) for(ll i = a; i < n; i++)
+#define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define inr(l, x, r) (l <= x && x < r)
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define all(x) (x).begin(), (x).end()
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
+constexpr int IINF = 1001001001;
+constexpr ll INF = 1LL<<60;
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+
+using mint = modint998244353;
+
+ll gcd(ll a, ll b){
+    if(a%b == 0){
+      return b;
+    }else{
+      return gcd(b, a%b);
+    }
+}
+
+ll lcm(ll a, ll b){
+    return a*b / gcd(a, b);
+}
+
+ll powMod(ll x, ll n, ll mod) {
+    if (n == 0) return 1 % mod;
+    ll val = powMod(x, n / 2, mod);
+    val *= val;
+    val %= mod;
+    if (n % 2 == 1) val *= x;
+    return val % mod;
+}
 
 struct bit_vector {
   using u32 = uint32_t;
@@ -152,10 +193,58 @@ struct WaveletMatrix {
   }
 };
 
-// T はunsignedになりがちなので注意！！！！！
+int main() {
+    ll t; cin >> t;
+    while(t--){
+        ll n, k; cin >> n >> k;
+        vector<ll> a(n), b(n);
+        rep(i,0,n) cin >> a[i], a[i]--;
+        rep(i,0,n) cin >> b[i], b[i]--;
+        vector<ll> vec(n);
+        vector<vector<ll>> ids(n);
+        vector<vector<ll>> idxs(n);
+        ll fw = 0;
+        {
+            rep(i,0,n) ids[b[i]].push_back(i);
+            rep(i,0,n) idxs[a[i]].push_back(i);
+            vector<ll> cnt(n,0);
+            rep(i,0,n){
+                vec[i] = ids[a[i]][cnt[a[i]]];
+                cnt[a[i]]++;
+                if(cnt[a[i]] > 1) fw = 1;
+            }
+        }
+        WaveletMatrix wm(vec);
+        ll tnum = 0;
+        rep(i,0,n-1) tnum += wm.range_freq(i+1,n,vec[i]);
+        // cout << tnum << endl;
 
-/*
- * @brief Wavelet Matrix
- * @docs docs/data-structure-2d/wavelet-matrix.md
- * https://nyaannyaan.github.io/library/data-structure-2d/wavelet-matrix.hpp.html
- */
+        if(!fw){
+            if(k%2 && tnum%2) cout << 1LL+((tnum+k-1)/(k*2))*2 << endl;
+            else if(k%2) cout << ((tnum+k*2-1)/(k*2))*2 << endl;
+            else if(tnum%2) cout << -1 << endl;
+            else cout << (tnum+k-1)/k << endl;
+            continue;
+        }
+        ll min_swap = INF;
+        rep(i,0,n){
+            if(ids[i].size() < 2) continue;
+            rep(j,0,ids[i].size()-1){
+                chmin(min_swap,wm.range_freq(idxs[i][j]+1,idxs[i][j+1],vec[idxs[i][j]]+1,vec[idxs[i][j+1]])*2+1);
+            }
+        }
+        ll ans = INF;
+        if(k%2 && tnum%2) ans = 1LL+((tnum+k-1)/(k*2))*2;
+        else if(k%2) ans = ((tnum+k*2-1)/(k*2))*2;
+        else if(tnum%2);
+        else ans = (tnum+k-1)/k;
+
+        if(k%2 && tnum%2) chmin(ans,((tnum+min_swap+k*2-1)/(k*2))*2);
+        else if(k%2) chmin(ans,1LL+((tnum+min_swap+k-1)/(k*2))*2);
+        else if(tnum%2) chmin(ans,(tnum+min_swap+k-1)/k);
+        
+        // cout << min_swap << " " << ans << endl;
+        cout << ans << endl;
+    }
+    return 0;
+}
