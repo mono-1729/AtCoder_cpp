@@ -66,7 +66,7 @@ struct StronglyConnectedComponents {
         unordered_map<ll,vector<ll>> mp;
         rep(i,0,n) mp[component[i]].push_back(i);
         vector<vector<ll>> res;
-        for(auto [key,val] : mp) res.push_back(val);
+        rep(i,0,mp.size()) res.push_back(mp[i]);
         return res;
     }
 };

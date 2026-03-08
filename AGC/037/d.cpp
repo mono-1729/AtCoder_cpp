@@ -1,11 +1,26 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 #include <stdlib.h>
+#include <atcoder/all>
+using namespace atcoder;
 using namespace std;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define inr(l, x, r) (l <= x && x < r)
 #define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
+#define all(x) (x).begin(), (x).end()
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
+constexpr int IINF = 1001001001;
+constexpr ll INF = 1LL<<60;
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+
+using mint = modint998244353;
 
 template <class Cap> 
 class Dinic {
@@ -143,3 +158,41 @@ public:
         return visited;
     }
 };
+
+int main() {
+    ll n, m; cin >> n >> m;
+    vector<vector<ll>> a(n,vector<ll>(m)), b(n,vector<ll>(m)), c(n,vector<ll>(m));
+    rep(i,0,n)rep(j,0,m) cin >> a[i][j], a[i][j]--;
+    Dinic<ll> g_(n+n+2);
+    ll start = n+n, end = start+1;
+    {
+        rep(i,0,n)rep(j,0,m) g_.add_edge(i,n+a[i][j]/m,1);
+        rep(i,0,n) g_.add_edge(start,i,1);
+        rep(i,0,n) g_.add_edge(n+i,end,1);
+    }
+
+    rep(t,0,m){
+        Dinic<ll> g = g_;
+        g.flow(start,end);
+        rep(i,0,n)rep(j,0,m){
+            if(g.get_edge(i*m+j).flow == 1){
+                g_.change_edge(i*m+j,0,0);
+                b[i][t] = a[i][j];
+                c[a[i][j]/m][t] = a[i][j];
+            }
+        }
+    }
+
+    rep(i,0,n){
+        rep(j,0,m) cout << b[i][j]+1 << " ";
+        cout << endl;
+    }
+
+    rep(i,0,n){
+        rep(j,0,m) cout << c[i][j]+1 << " ";
+        cout << endl;
+    }
+
+
+    return 0;
+}
