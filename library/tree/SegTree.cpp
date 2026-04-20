@@ -61,19 +61,10 @@ int ex = 0;
 // SegTree<int> rmq(n, fx, ex);
 
 
-#if __cplusplus >= 201703L
 
-template <class S, auto op, auto e> struct segtree {
-    static_assert(std::is_convertible_v<decltype(op), std::function<S(S, S)>>,
-                  "op must work as S(S, S)");
-    static_assert(std::is_convertible_v<decltype(e), std::function<S()>>,
-                  "e must work as S()");
-
-#else
 
 template <class S, S (*op)(S, S), S (*e)()> struct segtree {
 
-#endif
 
   public:
     segtree() : segtree(0) {}

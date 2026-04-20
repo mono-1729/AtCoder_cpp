@@ -1,70 +1,75 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 #include <stdlib.h>
 using namespace std;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define inr(l, x, r) (l <= x && x < r)
 #define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-constexpr ll mod = 1000000007;
+#define all(x) (x).begin(), (x).end()
+//constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
-template<int MOD> struct ModInt {
-	static const int Mod = MOD; unsigned x; ModInt() : x(0) { }
-	ModInt(signed sig) { x = sig < 0 ? sig % MOD + MOD : sig % MOD; }
-	ModInt(signed long long sig) { x = sig < 0 ? sig % MOD + MOD : sig % MOD; }
-	int get() const { return (int)x; }
-	ModInt &operator+=(ModInt that) { if ((x += that.x) >= MOD) x -= MOD; return *this; }
-	ModInt &operator-=(ModInt that) { if ((x += MOD - that.x) >= MOD) x -= MOD; return *this; }
-	ModInt &operator*=(ModInt that) { x = (unsigned long long)x * that.x % MOD; return *this; }
-	ModInt &operator/=(ModInt that) { return *this *= that.inverse(); }
-	ModInt operator+(ModInt that) const { return ModInt(*this) += that; }
-	ModInt operator-(ModInt that) const { return ModInt(*this) -= that; }
-	ModInt operator*(ModInt that) const { return ModInt(*this) *= that; }
-	ModInt operator/(ModInt that) const { return ModInt(*this) /= that; }
-	ModInt inverse() const { long long a = x, b = MOD, u = 1, v = 0;
-		while (b) { long long t = a / b; a -= t * b; std::swap(a, b); u -= t * v; std::swap(u, v); }
-		return ModInt(u); }
-	bool operator==(ModInt that) const { return x == that.x; }
-	bool operator!=(ModInt that) const { return x != that.x; }
-	ModInt operator-() const { ModInt t; t.x = x == 0 ? 0 : Mod - x; return t; }
-};
-template<int MOD> ostream& operator<<(ostream& st, const ModInt<MOD> a) { st << a.get(); return st; };
-template<int MOD> ModInt<MOD> operator^(ModInt<MOD> a, unsigned long long k) {
-	ModInt<MOD> r = 1; while (k) { if (k & 1) r *= a; a *= a; k >>= 1; } return r; }
-typedef ModInt<998244353> mint;
 
-int gcd(int a, int b){
-	if(a%b == 0){
-	  return b;
-	}else{
-	  return gcd(b, a%b);
-	}
-}
 
-int lcm(int a, int b){
-	return a*b / gcd(a, b);
-}
-
-ll powMod(ll x, ll n) {
-	if (n == 0) return 1 % MOD;
-	ll val = powMod(x, n / 2);
-	val *= val;
-	val %= MOD;
-	if (n % 2 == 1) val *= x;
-	return val % MOD;
+ll powMod(ll x, ll n, ll mod) {
+    if (n == 0) return 1 % mod;
+    ll val = powMod(x, n / 2, mod);
+    val *= val;
+    val %= mod;
+    if (n % 2 == 1) val *= x;
+    return val % mod;
 }
 
 int main() {
-	string s;cin>>s;
-	int n = s.size();
-	int num=0;
-	if(n%2==0) num++;
-	if(s[0]==s[n-1]) num++;
-	if(num%2==0) cout << "First" << endl;
-	else cout << "Second" << endl;
-	return 0;
+    ll n, p; cin >> n >> p;
+    priority_queue<pll,vector<pll>,greater<pll>> pq;
+    vector<ll> sum(n);
+    vector<ll> inv(n+1);
+    rep(i,1,n+1) inv[i] = powMod(i,p-2,p);
+    ll now = 0;
+    ll pre_sum = 0;
+    if(n%2 == 0) now = (n/2)*(n/2+1);
+    else now = (n/2+1)*(n/2+1);
+    rep(i,1,n+1){
+        sum[0]++;
+        ll r = now/i;
+        if(r < n) sum[r]--;
+        if(r < n) pq.push({(r+1)*i,r+1});
+    }
+    rep(i,1,n) sum[i] += sum[i-1];
+    ll all = 1;
+    rep(i,0,n){
+        all *= sum[i]-(n-i-1);
+        all %= p;
+    }
+    ll ans = (all*now)%p;
+    while(!pq.empty()){
+        pre_sum = all;
+        auto [__,id_] = pq.top();
+        while(!pq.empty()){
+            auto [_,id] = pq.top();
+            if(_ != __) break;
+            pq.pop();
+            ll cnum = _/id;
+            all *= inv[sum[id-1]-(n-1-(id-1))];
+            all %= p;
+            sum[id-1]++;
+            all *= sum[id-1]-(n-1-(id-1));
+            all %= p;
+            if(id < n) pq.push({(id+1)*cnum,id+1});
+        }
+        ll nnum = (all-pre_sum+p)%p;
+        ans += nnum*__;
+        ans %= p;
+    }
+    cout << ans << endl;
+    return 0;
 }

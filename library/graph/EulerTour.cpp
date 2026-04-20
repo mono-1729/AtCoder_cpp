@@ -96,6 +96,10 @@ struct EulerTour {
         ll l = min(in[u],in[v]), r = max(out[u],out[v]);
         return depth.rmq(l,r).second;
     }
+
+    ll dep(ll u){
+        return depth.rmq(in[u], in[u]+1).first;
+    }
 };
 
 int main() {
