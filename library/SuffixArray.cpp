@@ -142,4 +142,40 @@ struct LongestCommonPrefixArray {
   }
 };
 
-// 
+int main() {
+    ll n;cin>>n;
+    string s;cin>>s;
+    SuffixArray sa(s);
+    LongestCommonPrefixArray lcp(sa);
+    SparseTable<int> ST(lcp.LCP);
+    vector<ll> ans(n);
+    stack<pair<ll,ll>> st;
+    ll total=0;
+    auto init = [&](){
+        total=0;
+        while(!st.empty())st.pop();
+    };
+    auto add = [&](ll x){
+        ll cnt = 1;
+        while(!st.empty()){
+            if(st.top().first < x)break;
+            auto q = st.top();st.pop();
+            total -= q.first*q.second; 
+            cnt += q.second;
+        }
+        st.push({x,cnt});
+        total += x*cnt;
+    };
+    rep(i,0,n)ans[i]=n-i;
+    rep(i,1,n){
+        add(ST.rmq(i,i+1));
+        ans[sa[i]] += total;
+    }
+    init();
+    rrep(i,n-2,0){
+        add(ST.rmq(i+1,i+2));
+        ans[sa[i]]+=total;
+    }
+    rep(i,0,n)cout<<ans[i]<<endl;
+    return 0;
+}
