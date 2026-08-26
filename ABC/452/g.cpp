@@ -1,6 +1,48 @@
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>
 #include <stdlib.h>
+#include <atcoder/all>
+using namespace atcoder;
 using namespace std;
+#define rep(i, a, n) for(ll i = a; i < n; i++)
+#define rrep(i, a, n) for(ll i = a; i >= n; i--)
+#define inr(l, x, r) (l <= x && x < r)
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define all(x) (x).begin(), (x).end()
+//constexpr ll MOD = 1000000007;
+constexpr ll MOD = 998244353;
+constexpr int IINF = 1001001001;
+constexpr ll INF = 1LL<<60;
+template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
+template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
+
+using mint = modint998244353;
+
+ll gcd(ll a, ll b){
+    if(b == 0) return a;
+    if(a%b == 0){
+      return b;
+    }else{
+      return gcd(b, a%b);
+    }
+}
+
+ll lcm(ll a, ll b){
+    return a*b / gcd(a, b);
+}
+
+ll powMod(ll x, ll n, ll mod) {
+    if (n == 0) return 1 % mod;
+    ll val = powMod(x, n / 2, mod);
+    val *= val;
+    val %= mod;
+    if (n % 2 == 1) val *= x;
+    return val % mod;
+}
 
 template< typename T >
 struct SparseTable {
@@ -109,6 +151,15 @@ struct SuffixArray {
   }
 };
 
+using S = int;
+S op(S a, S b) {
+    return max(a,b);
+} 
+bool f(S x){
+    return x == 0;
+}
+S e() {return 0;}
+
 struct LongestCommonPrefixArray {
   const SuffixArray &SA;
   vector< int > LCP, rank;
@@ -142,40 +193,59 @@ struct LongestCommonPrefixArray {
   }
 };
 
+
 int main() {
-    ll n;cin>>n;
-    string s;cin>>s;
+    ll n; cin >> n;
+    string s = "";
+    vector<ll> a(n);
+    rep(i,0,n) cin >> a[i];
+    ll now = 0;
+    while(now < n){
+        ll num = a[now];
+        ll r = now;
+        while(r < n && a[r] == a[now]) r++;
+        ll l = r-now;
+        if(l < num) s.push_back('0');
+        else if(l == num) s.push_back('0'+num);
+        else{
+            s.push_back('0'+num);
+            s.push_back('0');
+            s.push_back('0'+num);
+        }
+        now = r;
+    }
     SuffixArray sa(s);
     LongestCommonPrefixArray lcp(sa);
     SparseTable<int> ST(lcp.LCP);
-    vector<ll> ans(n);
-    stack<pair<ll,ll>> st;
-    ll total=0;
-    auto init = [&](){
-        total=0;
-        while(!st.empty())st.pop();
-    };
-    auto add = [&](ll x){
-        ll cnt = 1;
-        while(!st.empty()){
-            if(st.top().first < x)break;
-            auto q = st.top();st.pop();
-            total -= q.first*q.second; 
-            cnt += q.second;
+    ll m = s.size();
+    segtree<S,op,e> seg(m);
+    vector<ll> pos(m);
+    rep(i,0,m) pos[sa.SA[i]] = i;
+    queue<ll> next0;
+    rep(i,0,m) if(s[i] == '0') next0.push(i);
+    next0.push(m);
+    ll ans = 0;
+    rep(i,0,m){
+        if(s[i] == '0'){
+            next0.pop();
+            continue;
         }
-        st.push({x,cnt});
-        total += x*cnt;
-    };
-    rep(i,0,n)ans[i]=n-i;
-    rep(i,1,n){
-        add(ST.rmq(i,i+1));
-        ans[sa[i]] += total;
+        ll len = next0.front()-i;
+        ll kaburi = 0;
+        ll l = seg.min_left<f>(pos[i]+1);
+        ll r = seg.max_right<f>(pos[i]);
+        if(r < m) chmax(kaburi,ST.rmq(pos[i],r));
+        if(l > 0) chmax(kaburi,ST.rmq(l-1,pos[i]));
+        chmin(kaburi,len);
+        ans += len-kaburi;
+        // cout << l << " " << r << endl;
+        // cout << i << " " << ans << endl;
+        seg.set(pos[i],1);
     }
-    init();
-    rrep(i,n-2,0){
-        add(ST.rmq(i+1,i+2));
-        ans[sa[i]]+=total;
-    }
-    rep(i,0,n)cout<<ans[i]<<endl;
+    cout << ans << endl;
+    // for(auto x: sa.SA) cout << x << " ";
+    // cout << endl;
+    // for(auto x: lcp.LCP) cout << x << " ";
+    // cout << endl;
     return 0;
 }

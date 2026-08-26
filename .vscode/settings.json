@@ -90,5 +90,5 @@
         "all": "cpp"
     },
     "prettier.tabWidth": 4,
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "enabled"
 }
