@@ -1,3 +1,4 @@
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/beam/fast_beam.cpp
 namespace fast_beam {
 
 // ビーム探索中の盤面を識別する128ビットキー。
