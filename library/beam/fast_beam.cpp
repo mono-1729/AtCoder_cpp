@@ -252,6 +252,13 @@ public:
             return result;
         }
 
+        // 満杯で最悪候補さえ改善できない場合、重複検索も不要。
+        // 同一キーの候補も最悪候補以上なので、重複の改善を失わない。
+        if (candidates_.size() == width_
+            && !better(candidate, candidates_[heap_.front()])) {
+            return result;
+        }
+
         std::uint32_t slot = 0;
 
         // 同じ状態がすでに保持されている場合。
