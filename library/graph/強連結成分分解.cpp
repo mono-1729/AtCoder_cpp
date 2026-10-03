@@ -48,7 +48,7 @@ struct StronglyConnectedComponents {
   
     /// 強連結成分を1つのノードに潰したグラフを再構築する
     vector<vector<ll>> rebuild() {
-      ll N = *max_element(component.begin(), component.end()) + 1;
+      ll N = n;
       vector<vector<ll>> rebuildedG(N);
       set<pair<ll, ll>> connected;
       for (ll v = 0; v < n; v++) {
@@ -63,10 +63,8 @@ struct StronglyConnectedComponents {
     }
 
     vector<vector<ll>> scc(){
-        unordered_map<ll,vector<ll>> mp;
-        rep(i,0,n) mp[component[i]].push_back(i);
         vector<vector<ll>> res;
-        rep(i,0,mp.size()) res.push_back(mp[i]);
+        rep(i,0,n) res[component[i]].push_back(i);
         return res;
     }
 };
