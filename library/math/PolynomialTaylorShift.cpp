@@ -5,6 +5,7 @@ using namespace std;
 using namespace atcoder;
 using mint = modint998244353;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/PolynomialTaylorShift.cpp
 // Binomial coefficient
 const int MOD = 998244353;
 template<class T> struct BiCoef {

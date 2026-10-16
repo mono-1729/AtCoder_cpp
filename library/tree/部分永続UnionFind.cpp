@@ -4,7 +4,7 @@
 #include <map>
 using namespace std;
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/%E9%83%A8%E5%88%86%E6%B0%B8%E7%B6%9AUnionFind.cpp
 using pint = pair<int,int>;
 struct PartiallyPersistentUnionFind {
     vector<int> par, last;

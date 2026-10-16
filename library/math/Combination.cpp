@@ -4,6 +4,8 @@ using namespace std;
 #define rep(i, a, n) for(int i = a; i < n; i++)
 #define ll long long
 constexpr ll MOD = 998244353;
+
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/Combination.cpp
 int maxnum=200005;
 vector<ll> fac(maxnum), inv(maxnum), finv(maxnum);
 void init_fac(){

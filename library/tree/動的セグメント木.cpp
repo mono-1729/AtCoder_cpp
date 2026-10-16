@@ -5,7 +5,7 @@ using namespace std;
 
 
 // https://lorent-kyopro.hatenablog.com/entry/2021/03/12/025644
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/%E3%82%AA%E3%83%95%E3%83%A9%E3%82%A4%E3%83%B3%E3%83%80%E3%82%A4%E3%82%B3%E3%83%8D.cpp
 template <class S, S (*op)(S, S), S (*e)()> class dynamic_segtree {
     public:
         dynamic_segtree(size_t n) : n(n), root(nullptr) {}

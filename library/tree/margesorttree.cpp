@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/margesorttree.cpp
 // https://hitonanode.github.io/cplib-cpp/segmenttree/merge_sort_tree.hpp.html
 // CUT begin
 // Count elements in $[A_\mathrm{begin}, ..., A_{\mathrm{end}-1}]$ which satisfy $A_i < \mathrm{query}$

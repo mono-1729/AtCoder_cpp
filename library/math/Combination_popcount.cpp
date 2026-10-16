@@ -1,3 +1,4 @@
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/Combination_popcount.cpp
 // m桁の数(2進数表記)のうち、1のビットがk個のものを列挙してリストを返すやつ
 std::vector<uint64_t> enumerate_popcount_k(int k, int m) {
     if (m < 0 || m > 64) throw std::invalid_argument("m out of range");

@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 #define rep(i,l,r)for(int i=(l);i<(r);i++)
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/%E5%8F%8C%E5%AF%BE%E3%82%BB%E3%82%B0%E6%9C%A8.cpp
 class segtree{
 public:
 	vector<set<pair<int,int>>> data;//

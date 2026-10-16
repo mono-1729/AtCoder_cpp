@@ -3,6 +3,7 @@
 #include <utility>
 #define ll long long
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/min-plus%E7%95%B3%E3%81%BF%E8%BE%BC%E3%81%BF.cpp
 // Aが凸の場合
 template<class Elem>
 std::vector<std::pair<Elem, ll>> MinPlusConvolution_AIsConvex(

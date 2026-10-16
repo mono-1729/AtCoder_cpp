@@ -3,6 +3,7 @@ using namespace std;
 #define rep(i,n) for (int i = 0; i < (n); ++i)
 
 // https://atcoder.jp/contests/abc268/submissions/34765119
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/Aho-Corasick.cpp
 
 struct Aho {
     using MP = unordered_map<char,int>;

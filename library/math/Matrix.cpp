@@ -5,7 +5,7 @@ using namespace std;
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
 #define ll long long
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/Matrix.cpp
 template< class T >
 struct Matrix {
     vector< vector< T > > A;

@@ -6,6 +6,7 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/SegHash.cpp
 template <typename X>
 struct SegTree {
 	using FX = function<X(X, X)>; // X•X -> X となる関数の型

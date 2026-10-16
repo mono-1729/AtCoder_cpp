@@ -16,6 +16,7 @@ constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/Rollback%E4%BB%98%E3%81%8DUnionFind.cpp
 struct RollbackUnionFind {
   vector<int> data;
   stack<pair<int, int> > history;

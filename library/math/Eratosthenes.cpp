@@ -9,6 +9,8 @@ using namespace std;
 constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
+
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/Eratosthenes.cpp
 // 0ならば素数, 0でないなら最⼩の素因数
 // 素因数分解や素因数の数も求めることが可能
 int max_num=1000005;

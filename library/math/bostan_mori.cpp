@@ -1,4 +1,5 @@
 // https://github.com/drken1215/algorithm/blob/master/MathAlgebra/bostan_mori.cpp
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/bostan_mori.cpp
 #pragma GCC optimize("O3")
 #pragma GCC optimize("unroll-loops")
 #include <bits/stdc++.h>

@@ -10,7 +10,7 @@ using namespace std;
 //constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/Z-algorithm.cpp
 vector<ll> Z_algorithm(string S) {
 	ll c = 0, n = S.size();
 	vector<ll> Z(n, 0);

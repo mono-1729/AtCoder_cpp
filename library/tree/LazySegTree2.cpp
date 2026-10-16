@@ -1,4 +1,5 @@
 // https://betrue12.hateblo.jp/entry/2020/09/23/005940
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/LazySegTree2.cpp
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long

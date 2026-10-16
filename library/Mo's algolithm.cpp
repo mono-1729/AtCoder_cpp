@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include <stdlib.h>
 using namespace std;
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/Mo's%20algolithm.cpp
 // https://ei1333.hateblo.jp/entry/2017/09/11/211011
 struct Mo {
   int n;

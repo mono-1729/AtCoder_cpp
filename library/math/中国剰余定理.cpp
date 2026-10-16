@@ -10,6 +10,7 @@ const int mod_num = 998244353;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/%E4%B8%AD%E5%9B%BD%E5%89%B0%E4%BD%99%E5%AE%9A%E7%90%86.cpp
 /*
 中国剰余定理 :
     m1とm2を互いに素な正の整数とする。

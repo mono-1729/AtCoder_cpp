@@ -5,7 +5,7 @@ using namespace atcoder;
 using namespace std;
 
 // https://nyaannyaan.github.io/library/math/two-sat.hpp.html
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/2SAT.cpp
 #include <bits/stdc++.h>
 #include <stdlib.h>
 #include <atcoder/all>

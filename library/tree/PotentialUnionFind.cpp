@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/PotentialUnionFind.cpp
 template<class Abel> struct UnionFind {
     vector<ll> par;
     vector<ll> rank;

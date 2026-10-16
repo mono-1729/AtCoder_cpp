@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/%E9%AB%98%E9%80%9F%E7%B4%A0%E5%9B%A0%E6%95%B0%E5%88%86%E8%A7%A3.cpp
 //n以下の整数について最小の素因数を求めた結果の配列を返す
 //min_factor[i]はiを割り切る最小の数（iの素因数のうち最小のもの）
 //min_factor[i] == iならiは素数（i=0, 1のときを除く）

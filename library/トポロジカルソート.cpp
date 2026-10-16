@@ -19,7 +19,7 @@ template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
 using mint = modint998244353;
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/%E3%83%88%E3%83%9D%E3%83%AD%E3%82%B8%E3%82%AB%E3%83%AB%E3%82%BD%E3%83%BC%E3%83%88.cpp
 class tsort {
 public:
 	int V;

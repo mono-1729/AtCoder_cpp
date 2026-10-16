@@ -3,6 +3,7 @@
 #include <immintrin.h>
 using namespace std;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/WaveletMatrix.cpp
 struct bit_vector {
   using u32 = uint32_t;
   using i64 = int64_t;

@@ -17,7 +17,7 @@ template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
 using mint = modint998244353;
-
+// http://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/FormalPowerSeries.cpp
 // Formal Power Series
 using vm = vector<mint>;
 struct fps : vm {

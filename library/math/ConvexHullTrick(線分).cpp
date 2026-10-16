@@ -6,6 +6,7 @@ using namespace std;
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
 #define ll long long
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/ConvexHullTrick(%E7%B7%9A%E5%88%86).cpp
 template<typename T> class CHT {
 private:
     struct node {

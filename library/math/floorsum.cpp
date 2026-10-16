@@ -7,7 +7,7 @@ using namespace std;
 #define ll long long
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/floorsum.cpp
 long long floor_sum(long long n, long long m, long long a, long long b) {
     long long ans = 0;
     if (a >= m) {

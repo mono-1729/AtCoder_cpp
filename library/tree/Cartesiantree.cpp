@@ -6,7 +6,7 @@
 using namespace atcoder;
 using namespace boost::multiprecision;
 using namespace std;
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/Cartesiantree.cpp
 template <typename T>
 pair<vector<vector<int>>, int> CartesianTree(vector<T> &a) {
   int N = (int)a.size();

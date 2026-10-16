@@ -128,6 +128,7 @@ ll powMod(ll x, ll n) {
     if (n % 2 == 1) val *= x;
     return val % MOD;
 }
+/ https://github.com/mono-1729/AtCoder_cpp/blob/main/library/%E9%AB%98%E9%80%9F%E3%82%BC%E3%83%BC%E3%82%BF%E5%A4%89%E6%8F%9B.cpp
 
 int main() {
     ll n;cin>>n;

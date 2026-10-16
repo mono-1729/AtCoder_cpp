@@ -18,6 +18,7 @@ constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/%E3%82%AA%E3%83%95%E3%83%A9%E3%82%A4%E3%83%B3%E3%83%80%E3%82%A4%E3%82%B3%E3%83%8D.cpp
 struct RollbackUnionFind {
   vector<int> data;
   stack<pair<int, int> > history;

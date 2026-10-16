@@ -1,5 +1,6 @@
 //https://codeforces.com/contest/1856/problem/E2
 //https://codeforces.com/contest/1856/submission/219130190
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/subset_sum.cpp
 const ll _max_len=4e6+10;
 template<ll _len=1>
 std::vector<bool> fast_subset_sub_solver(std::vector<ll> &p,ll sum=-1){

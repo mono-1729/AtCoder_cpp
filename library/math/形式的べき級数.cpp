@@ -20,7 +20,7 @@ template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
 using mint = modint998244353;
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/%E5%BD%A2%E5%BC%8F%E7%9A%84%E3%81%B9%E3%81%8D%E7%B4%9A%E6%95%B0.cpp
 #define rep2(i, m, n) for(int i = (m); i < (n); ++i)
 #define drep2(i, m, n) for(int i = (m)-1; i >= (n); --i)
 #define drep(i, n) drep2(i, n, 0)

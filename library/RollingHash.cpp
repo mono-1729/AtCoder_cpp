@@ -16,6 +16,7 @@ constexpr ll INF = 1e18;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/RollingHash.cpp
 // Reference: https://qiita.com/keymoon/items/11fac5627672a6d6a9f6
 #define ull unsigned long long 
 // ハッシュの計算用

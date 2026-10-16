@@ -3,6 +3,7 @@
 #include <stdlib.h>
 using namespace std;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/SlopeTrick.cpp
 // https://ei1333.github.io/library/structure/others/slope-trick.hpp
 
 template <typename T>

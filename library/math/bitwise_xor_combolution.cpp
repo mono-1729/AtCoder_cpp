@@ -19,7 +19,7 @@ constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/bitwise_xor_combolution.cpp
 #define all(x) begin(x), end(x)
 #define sz(x) int((x).size())
 using vi = vector<int>;

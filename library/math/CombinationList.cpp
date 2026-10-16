@@ -2,6 +2,7 @@
 #include <cstdint>
 using namespace std;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/CombinationList.cpp
 template<typename T>
 vector<vector<T>> combination(vector<T> &elems, int r) {
     vector<vector<T>> v{};

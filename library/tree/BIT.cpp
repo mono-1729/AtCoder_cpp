@@ -3,6 +3,7 @@ using namespace std;
 #define rep(i, a, n) for(int i = a; i < n; i++)
 #define ll long long
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/BIT.cpp
 class BIT {
 public:
     ll n; // データの長さ

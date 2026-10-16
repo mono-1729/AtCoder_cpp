@@ -3,7 +3,7 @@
 using namespace std;
 
 // https://tjkendev.github.io/procon-library/cpp/graph/auxiliary_tree.html
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/AuxiliaryTree.cpp
 vector<int> fs, ls, depth, lg, stk;
 
 vector<vector<int>> st;

@@ -11,6 +11,7 @@ using namespace std;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/%E6%B0%B8%E7%B6%9A%E3%82%BB%E3%82%B0%E3%83%A1%E3%83%B3%E3%83%88%E6%9C%A8.cpp
 // https://ei1333.github.io/library/structure/segment-tree/persistent-segment-tree.hpp.html
 // https://atcoder.jp/contests/abc453/tasks/abc453_g
 

@@ -1,5 +1,5 @@
 #include <cstdint>
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/runtime_modint.cpp
 class runtime_modint {
   using u64 = std::uint_fast64_t;
 

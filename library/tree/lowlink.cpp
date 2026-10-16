@@ -20,7 +20,7 @@
 using namespace std;
 
 typedef long long ll;
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/lowlink.cpp
 class LowLink {
 	typedef std::vector<std::vector<ll>> Edge;
 

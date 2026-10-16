@@ -12,6 +12,7 @@ constexpr ll MOD = 998244353;
 constexpr int IINF = 1001001001;
 constexpr ll INF = 1LL<<60;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/Combinationmod.cpp
 /* Com：nCk % p の計算のための構造体
     前処理・初期化: O(p^2)
     nCk(n,k): nCk % p の計算。O(log n)

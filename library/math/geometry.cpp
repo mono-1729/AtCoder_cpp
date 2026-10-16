@@ -4,6 +4,7 @@ using ll = long long;
 #define rep(i, a, n) for(int i = a; i < n; i++)
 #define rrep(i, a, n) for(int i = a; i >= n; i--)
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/geometry.cpp
 /*
 前提
 - 点(位置ベクトル)を複素数型で扱う

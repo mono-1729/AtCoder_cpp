@@ -7,7 +7,7 @@ using namespace std;
 #define ll long long
 //constexpr ll MOD = 1000000007;
 constexpr ll MOD = 998244353;
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/%E5%8E%9F%E5%AD%90%E6%A0%B9.cpp
 __int128 powX(__int128 x, __int128 n, __int128 mod) {
     if (n == 0) return 1 % mod;
     __int128 val = powX(x, n / 2, mod);

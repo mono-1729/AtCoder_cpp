@@ -15,6 +15,7 @@ constexpr ll INF = 1LL<<60;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/%E5%8C%BA%E9%96%93LIS.cpp
 // https://atcoder.jp/contests/chokudai_S001/submissions/22179950
  
 namespace range_lis_query_impl {

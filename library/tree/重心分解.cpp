@@ -140,7 +140,7 @@ int main() {
     }
     vector<ll> used(n),ans(n,-1),t(n);
 
-    auto calcT = [&](auto& calcT,ll v,ll p=-1)->int{
+    auto calcT = [&](auto& calcT,ll v,ll p=-1)->int {
         t[v]=1;
         for(auto nv:g[v]){
             if(used[nv]) continue;
@@ -150,7 +150,7 @@ int main() {
         return t[v];
     };
 
-    auto getC = [&](auto& getC,ll T,ll v,ll p=-1)->pll{
+    auto getC = [&](auto& getC,ll T,ll v,ll p=-1)->pll {
         ll mx = T-t[v];
         pll res = {T,-1};
         for(auto nv:g[v]){
@@ -162,7 +162,7 @@ int main() {
         return min(res,{mx,v});
     };
 
-    auto solve = [&](auto& solve,ll v)->int{
+    auto solve = [&](auto& solve,ll v)->int {
         ll t=calcT(calcT,v);
         ll c=getC(getC,t,v).second;
         used[c]=1;

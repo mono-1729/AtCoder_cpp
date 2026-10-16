@@ -8,7 +8,7 @@ using namespace std;
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
 #define ll long long
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/graph/%E5%BC%B7%E9%80%A3%E7%B5%90%E6%88%90%E5%88%86%E5%88%86%E8%A7%A3.cpp
 struct StronglyConnectedComponents {
     ll n;
     vector<vector<ll>> G, rG;

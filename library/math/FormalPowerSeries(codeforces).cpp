@@ -6,6 +6,7 @@ using namespace std;
 using ll = long long;
 constexpr int MOD = 998244353;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/FormalPowerSeries(codeforces).cpp
 // ---------------- ModInt ----------------
 template< int mod >
 struct ModInt {

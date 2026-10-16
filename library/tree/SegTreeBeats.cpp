@@ -5,7 +5,7 @@ using namespace std;
 using ll = long long;
 #define rep(i, a, n) for(ll i = a; i < n; i++)
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/SegTreeBeats.cpp
 // Segment Tree Beats
 // - l<=i<r について、 A_i の値を min(A_i, x) に更新
 // - l<=i<r について、 A_i の値を max(A_i, x) に更新

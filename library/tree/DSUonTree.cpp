@@ -1,3 +1,4 @@
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/DSUonTree.cpp
 template<class ADD, class DEL, class QUERY>
 struct DSUOnTree {
     ll n;

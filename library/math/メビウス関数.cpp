@@ -6,6 +6,7 @@ using namespace std;
 #define rrep(i, a, n) for(ll i = a; i >= n; i--)
 #define ll long long
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/%E3%83%A1%E3%83%93%E3%82%A6%E3%82%B9%E9%96%A2%E6%95%B0.cpp
 struct Eratosthenes {
     // テーブル
     vector<bool> isprime;

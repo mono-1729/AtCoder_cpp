@@ -3,7 +3,7 @@
 using namespace std;
 using ll = long long;
 
-
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/%E5%87%B8%E5%8C%85.cpp
 struct Pos {
   ll x, y;
   Pos() {}

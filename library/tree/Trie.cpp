@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/Trie.cpp
 /* Trie 木： 文字の種類(char_size)、int型で0に対応する文字(base)
     insert(word): 単語 word を Trie 木に挿入する
     search(word): 単語 word が Trie 木にあるか判定する

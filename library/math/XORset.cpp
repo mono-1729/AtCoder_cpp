@@ -10,6 +10,7 @@ using namespace std;
 template<class t,class u> void chmax(t&a,u b){if(a<b)a=b;}
 template<class t,class u> void chmin(t&a,u b){if(b<a)a=b;}
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/math/XORset.cpp
 class xor_set{
 private:
     vector<ll> w;

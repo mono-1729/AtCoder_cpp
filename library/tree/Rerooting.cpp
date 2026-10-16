@@ -7,6 +7,7 @@ using namespace std;
 #define ll long long
 
 // https://trap.jp/post/1702/
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/tree/Rerooting.cpp
 
 template <class E, class V, E (*merge)(E, E), E (*e)(), E (*put_edge)(V, int), V (*put_vertex)(E, int)>
 struct RerootingDP {

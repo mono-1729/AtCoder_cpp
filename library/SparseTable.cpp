@@ -2,6 +2,7 @@
 #include <stdlib.h>
 using namespace std;
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/SparseTable.cpp
 template< typename T >
 struct SparseTable {
   vector< vector< T > > st;
