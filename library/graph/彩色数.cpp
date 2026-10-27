@@ -41,6 +41,8 @@ ll powMod(ll x, ll n) {
     return val % MOD;
 }
 
+// https://github.com/mono-1729/AtCoder_cpp/blob/main/library/graph/%E5%BD%A9%E8%89%B2%E6%95%B0.cpp
+
 int chromatic_number(const vector<vector< bool >> &g) {
   int N = (int) g.size();
   vector< int > es(N);
